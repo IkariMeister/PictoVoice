@@ -80,6 +80,11 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
+
+  Constitution alignment: For user-facing or latency-sensitive features, include
+  explicit requirements for UX consistency (patterns, copy tone), accessibility
+  (WCAG 2.1 AA scope), and performance (measurable user-observable outcomes).
+  See .specify/memory/constitution.md.
 -->
 
 ### Functional Requirements
