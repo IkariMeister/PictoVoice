@@ -1,5 +1,14 @@
 # Feature Specification: AAC Pictogram App for Motor Disability
 
+## Clarifications
+
+### Session 2026-04-09
+
+- Q: May cloud services process user communication data to rank pictogram predictions? → A: No — suggestions use on-device inference and/or local rules only; sentence and session selection data MUST NOT be sent to remote services for predictions (Option A).
+- Q: How many communicators are supported per device in v1? → A: Single communicator context per device for v1 — one saved grid, layout, and preferences; no multi-user profile switching (Option B).
+- Q: How many languages for UI and Speak in v1? → A: Single primary language for interface and spoken pictogram output in v1; multilingual switching out of scope for v1 (Option B).
+- Q: How many mobile platforms must v1 launch on? → A: Both major mobile platforms at the same time with comparable support (Option B).
+- Q: Must customization of grid/vocabulary be protected? → A: Yes — saving customization always requires successful caregiver authentication first (Option A).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -60,15 +69,15 @@ The user clears one pictogram or the whole sentence to correct mistakes quickly.
 
 **Tracked as**: [#5 — US4 / P3](https://github.com/IkariMeister/PictoVoice/issues/5)
 
-A caregiver or the user adjusts which pictograms appear and how the grid is arranged. A prediction strip suggests likely next pictograms based on context (e.g., time of day) and recent selections to reduce how many touches are needed.
+A caregiver adjusts which pictograms appear and how the grid is arranged; persisting those changes always requires caregiver authentication (e.g., PIN or device credential) so daily communication is not accidentally reconfigured. A prediction strip suggests likely next pictograms based on context (e.g., time of day) and recent selections to reduce how many touches are needed.
 
 **Why this priority**: Personalization and prediction improve speed and relevance but are not required for the first usable communication session.
 
-**Independent Test**: Change grid content or layout, return to communication, confirm new symbols appear; build a partial sentence and confirm the suggestion bar updates and that selecting a suggestion adds the symbol correctly.
+**Independent Test**: Caregiver completes authentication, changes grid content or layout, saves, then returns to communication and confirms new symbols appear; build a partial sentence and confirm the suggestion bar updates and that selecting a suggestion adds the symbol correctly; confirm that save without successful authentication does not alter persisted configuration.
 
 **Acceptance Scenarios**:
 
-1. **Given** customization mode (or settings), **When** the user saves changes to the pictogram set or layout, **Then** the main grid reflects those changes on next use.
+1. **Given** the caregiver has successfully authenticated for customization, **When** they save changes to the pictogram set or layout, **Then** the main grid reflects those changes on next use.
 2. **Given** an active sentence or context and the prediction area is visible, **When** the user selects a suggested pictogram, **Then** it is inserted or appended according to a consistent, documented rule (see Assumptions).
 3. **Given** the user navigates only with touch, **When** they operate the grid, sentence area, Speak, clear, and prediction controls, **Then** all targets meet the minimum size defined in Functional Requirements.
 
@@ -81,6 +90,7 @@ A caregiver or the user adjusts which pictograms appear and how the grid is arra
 - Rapid repeated touches (tremor or accidental double-tap): behavior aligns with system assistive settings where applicable; app does not trap the user in unintended repeated actions beyond platform norms.
 - Prediction returns no or low-confidence suggestions: bar shows an empty or neutral state without breaking the grid or sentence builder.
 - Very long sentences: sentence area remains usable (scroll or truncation with clear indication) without hiding Speak or essential controls.
+- Caregiver fails or cancels authentication when attempting to save customization: no partial writes; communicator sees the last successfully saved grid and layout.
 
 ## Requirements *(mandatory)*
 
@@ -94,8 +104,11 @@ A caregiver or the user adjusts which pictograms appear and how the grid is arra
 - **FR-006**: Users MUST be able to remove a single pictogram from the sequence and clear the entire sequence through explicit actions.
 - **FR-007**: On touch or equivalent activation, interactive controls MUST show immediate high-contrast visual feedback (e.g., border or color change) so the user can tell the input was recognized.
 - **FR-008**: The interface MUST be fully operable via direct touch and MUST not interfere with system-level assistive behaviors such as extended touch duration or repeat-touch filtering when those features are enabled on the device.
-- **FR-009**: The system MUST provide an AI-driven prediction strip suggesting likely next pictograms informed by contextual signals including time-of-day and prior selections in the current session (and MAY use additional context defined in planning).
-- **FR-010**: Pictogram sets and grid layout MUST be user- or caregiver-configurable within product limits (e.g., visible cell count), without requiring developer intervention.
+- **FR-009**: The system MUST provide a prediction strip suggesting likely next pictograms informed by contextual signals including time-of-day and prior selections in the current session. Suggestion ranking MUST run entirely on the device (on-device models and/or locally evaluated rules). The system MUST NOT send the user’s sentence, pictogram sequence, or session selection history to remote services for generating or ranking predictions.
+- **FR-010**: Pictogram sets and grid layout MUST be caregiver-configurable within product limits (e.g., visible cell count), without requiring developer intervention. For v1, configuration applies to a single communicator context on the device (no switching between multiple named user profiles).
+- **FR-013**: Persisting any change to the pictogram set or grid layout MUST require successful caregiver authentication immediately before save (e.g., PIN or device credential). Failed or canceled authentication MUST leave the previously saved configuration unchanged.
+- **FR-011**: For v1, the system MUST use one primary language for interface chrome and for default spoken labels tied to pictograms in the active catalog. The chosen language is fixed for the release and recorded in planning; end-user language switching is out of scope for v1.
+- **FR-012**: For v1, the product MUST ship with comparable functional support on both major consumer mobile platforms (as identified in planning), including primary communication flows, offline Speak, touch-target minimums, visual feedback, customization, and on-device predictions. Acceptance testing MUST cover each platform.
 
 ### Key Entities
 
@@ -117,9 +130,12 @@ A caregiver or the user adjusts which pictograms appear and how the grid is arra
 
 ## Assumptions
 
-- Primary device class is mobile or tablet with platform-standard accessibility APIs; desktop is out of scope unless later specified.
+- Primary device class is mobile or tablet with platform-standard accessibility APIs; desktop is out of scope unless later specified. v1 targets both major mobile platforms simultaneously with comparable behavior; planning names the platforms and any justified platform-specific gaps are documented before release.
+- v1 supports one communicator context per device (caregiver and end user share the same saved vocabulary and layout; multi-profile switching is out of scope for v1 unless added in a later specification).
+- v1 delivers UI and spoken output in one primary language; multilingual UI or per-user language switching is out of scope for v1 unless added in a later specification.
+- Customization that changes the catalog or grid is caregiver-only for persistence: saving such changes always follows successful authentication as in FR-013.
 - At least one high-quality on-device voice is installed or bundled so offline speech meets intelligibility expectations; voice installation flows may be documented separately.
 - “Natural-sounding” is judged by stakeholder listening tests, not a specific vendor engine.
 - Insertion behavior for prediction taps defaults to appending to the sentence unless product research favors another single consistent rule documented in planning.
 - Customizable grid uses a bounded catalog of pictograms supplied with the app or approved imports; open-ended internet image search is out of scope.
-- AI prediction may use on-device models, rule-based context, or both; planning will choose approaches that respect privacy and offline requirements for core flows.
+- Predictions use on-device models, locally stored patterns, and/or device-local rules only; no cloud processing of user communication content for suggestions (see Clarifications session 2026-04-09).
