@@ -1,0 +1,156 @@
+openapi: 3.1.0
+info:
+  title: PictoVoice Vocabulary API
+  version: 0.1.0
+  description: >
+    Backend contract for caregiver vocabulary management and device sync.
+    Push notifications (out of band) reference vocabularyRevision only.
+
+paths:
+  /v1/vocabulary/manifest:
+    get:
+      summary: Get current vocabulary manifest for delta sync
+      parameters:
+        - name: If-None-Match
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Manifest body
+          headers:
+            ETag:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyManifest'
+        '304':
+          description: Not modified
+
+  /v1/vocabulary/delta:
+    get:
+      summary: Fetch pictogram changes since a revision
+      parameters:
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyDelta'
+
+  /v1/devices/register:
+    post:
+      summary: Register or refresh push token for vocabulary updates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+      responses:
+        '204':
+          description: Registered
+
+  /v1/caregiver/layout:
+    put:
+      summary: Publish grid layout (caregiver authenticated)
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GridLayout'
+      responses:
+        '200':
+          description: Published; returns new revision
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    VocabularyManifest:
+      type: object
+      required: [revision, generatedAt]
+      properties:
+        revision:
+          type: string
+        generatedAt:
+          type: string
+          format: date-time
+        pictogramHashes:
+          type: object
+          additionalProperties:
+            type: string
+
+    VocabularyDelta:
+      type: object
+      properties:
+        revision:
+          type: string
+        upserts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pictogram'
+        deletes:
+          type: array
+          items:
+            type: string
+
+    Pictogram:
+      type: object
+      required: [id, spokenText]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        spokenText:
+          type: string
+        imageRef:
+          type: string
+        category:
+          type: string
+        sortOrder:
+          type: integer
+
+    GridLayout:
+      type: object
+      required: [id, rows, columns, cells, version]
+      properties:
+        id:
+          type: string
+        rows:
+          type: integer
+        columns:
+          type: integer
+        cells:
+          type: array
+          items:
+            type: string
+            nullable: true
+        version:
+          type: string
+
+    DeviceRegistration:
+      type: object
+      required: [platform, token]
+      properties:
+        platform:
+          type: string
+          enum: [android, ios]
+        token:
+          type: string
+        deviceId:
+          type: string
