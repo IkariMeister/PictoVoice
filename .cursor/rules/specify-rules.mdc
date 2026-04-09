@@ -1,0 +1,36 @@
+---
+description: Project Development Guidelines
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# PictoVoice Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-04-10
+
+## Active Technologies
+
+- Kotlin 2.0+ (KMP), Gradle Kotlin DSL + Compose Multiplatform, Kotlin Coroutines/Flow, Ktor Client (or OkHttp expect/actual) for REST, SQLDelight or Room (Android) + platform storage expect/actual for local catalog, Firebase Cloud Messaging (Android), Apple Push Notification service (iOS), Sentry Kotlin Multiplatform SDK (002-kmp-pictovoice-aac)
+
+## Project Structure
+
+```text
+backend/
+frontend/
+tests/
+```
+
+## Commands
+
+# Add commands for Kotlin 2.0+ (KMP), Gradle Kotlin DSL
+
+## Code Style
+
+Kotlin 2.0+ (KMP), Gradle Kotlin DSL: Follow standard conventions
+
+## Recent Changes
+
+- 002-kmp-pictovoice-aac: Added Kotlin 2.0+ (KMP), Gradle Kotlin DSL + Compose Multiplatform, Kotlin Coroutines/Flow, Ktor Client (or OkHttp expect/actual) for REST, SQLDelight or Room (Android) + platform storage expect/actual for local catalog, Firebase Cloud Messaging (Android), Apple Push Notification service (iOS), Sentry Kotlin Multiplatform SDK
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
