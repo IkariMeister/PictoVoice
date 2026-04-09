@@ -1,13 +1,11 @@
 # Feature Specification: AAC Pictogram App for Motor Disability
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: 2026-04-09  
-**Status**: Draft  
-**Input**: User description: "AAC Pictogram App for Motor Disability — dynamic high-contrast grid, large touch targets, sentence builder, offline speech, accessibility feedback, assistive-tech compatibility, AI pictogram suggestions."
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Build a message and speak it (Priority: P1)
+
+**Tracked as**: [#2 — US1 / P1](https://github.com/IkariMeister/PictoVoice/issues/2)
 
 A person with motor disability selects communication symbols from a grid; each selection adds the symbol to an ordered sentence area at the top. They use a primary Speak action to hear the full sequence read aloud in natural-sounding speech.
 
@@ -25,6 +23,8 @@ A person with motor disability selects communication symbols from a grid; each s
 
 ### User Story 2 - Communicate when offline (Priority: P2)
 
+**Tracked as**: [#3 — US2 / P2](https://github.com/IkariMeister/PictoVoice/issues/3)
+
 The user relies on speech output even without internet (e.g., clinic basement, travel, outage). Speech for the current sequence is generated and played entirely on the device.
 
 **Why this priority**: AAC users need a dependable voice; network dependency creates unacceptable failure modes.
@@ -39,6 +39,8 @@ The user relies on speech output even without internet (e.g., clinic basement, t
 ---
 
 ### User Story 3 - Edit the sentence and get immediate touch feedback (Priority: P2)
+
+**Tracked as**: [#4 — US3 / P2](https://github.com/IkariMeister/PictoVoice/issues/4)
 
 The user clears one pictogram or the whole sentence to correct mistakes quickly. Every interactive control gives obvious visual confirmation as soon as a touch is recognized.
 
@@ -56,6 +58,8 @@ The user clears one pictogram or the whole sentence to correct mistakes quickly.
 
 ### User Story 4 - Customize the grid and get next-symbol help (Priority: P3)
 
+**Tracked as**: [#5 — US4 / P3](https://github.com/IkariMeister/PictoVoice/issues/5)
+
 A caregiver or the user adjusts which pictograms appear and how the grid is arranged. A prediction strip suggests likely next pictograms based on context (e.g., time of day) and recent selections to reduce how many touches are needed.
 
 **Why this priority**: Personalization and prediction improve speed and relevance but are not required for the first usable communication session.
@@ -65,7 +69,7 @@ A caregiver or the user adjusts which pictograms appear and how the grid is arra
 **Acceptance Scenarios**:
 
 1. **Given** customization mode (or settings), **When** the user saves changes to the pictogram set or layout, **Then** the main grid reflects those changes on next use.
-2. **Given** an active sentence or context, **When** the prediction area is visible, **When** the user selects a suggested pictogram, **Then** it is inserted or appended according to a consistent, documented rule (see Assumptions).
+2. **Given** an active sentence or context and the prediction area is visible, **When** the user selects a suggested pictogram, **Then** it is inserted or appended according to a consistent, documented rule (see Assumptions).
 3. **Given** the user navigates only with touch, **When** they operate the grid, sentence area, Speak, clear, and prediction controls, **Then** all targets meet the minimum size defined in Functional Requirements.
 
 ---
