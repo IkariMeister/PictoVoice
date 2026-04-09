@@ -11,11 +11,7 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+
 
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
 **Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
@@ -31,7 +27,18 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify alignment with `.specify/memory/constitution.md` (PictoVoice):
+
+- **Code quality**: Plan names modules/boundaries and review expectations; no
+unjustified complexity without Complexity Tracking.
+- **Testing**: Test levels for this feature are identified; gaps or exceptions
+are explicit and time-bounded in the spec or plan.
+- **UX consistency**: User-facing work references patterns or documents new
+ones; error/empty states considered.
+- **Accessibility**: UI-related scope states WCAG 2.1 AA intent or a documented
+exception with remediation.
+- **Performance**: Measurable targets or budgets defined for latency-sensitive
+or resource-heavy paths, or rationale if not applicable.
 
 ## Project Structure
 
@@ -48,12 +55,8 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+
+
 
 ```text
 # [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
@@ -98,7 +101,10 @@ directories captured above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
+
+
