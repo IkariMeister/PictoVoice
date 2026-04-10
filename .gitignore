@@ -1,2 +1,21 @@
 # Local Specify CLI state (branch-specific feature pointer)
 .specify/feature.json
+
+# Kotlin / Gradle / IDE
+**/.gradle/
+**/build/
+**/out/
+*.iml
+.idea/
+.DS_Store
+*.log
+.env*
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.keystore
+!debug.keystore
+
+# macOS
+.DS_Store
