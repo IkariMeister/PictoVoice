@@ -30,4 +30,9 @@ class EditSentenceUiLogicTest {
         val event: CommunicationEvent = CommunicationEvent.ClearSentence
         assertEquals(CommunicationEvent.ClearSentence, event)
     }
+
+    @Test
+    fun removableLabel_appends_remove_hint() {
+        assertEquals("Water (remove)", removableLabelFor("Water"))
+    }
 }

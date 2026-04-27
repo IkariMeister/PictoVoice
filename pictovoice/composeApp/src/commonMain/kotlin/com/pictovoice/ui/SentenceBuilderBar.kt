@@ -2,6 +2,7 @@ package com.pictovoice.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,31 +17,44 @@ import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
 
+internal fun removableLabelFor(label: String): String = "$label (remove)"
+
 @Composable
 fun SentenceBuilderBar(
     sentencePictograms: List<Pictogram>,
     onPictogramTapped: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier =
             modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
                 .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        if (sentencePictograms.isEmpty()) {
-            Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
-        } else {
-            sentencePictograms.forEachIndexed { index, pictogram ->
-                Text(
-                    text = pictogram.label,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clickable { onPictogramTapped(index) },
-                )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (sentencePictograms.isEmpty()) {
+                Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
+            } else {
+                sentencePictograms.forEachIndexed { index, pictogram ->
+                    Text(
+                        text = removableLabelFor(pictogram.label),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.clickable { onPictogramTapped(index) },
+                    )
+                }
             }
+        }
+        if (sentencePictograms.isNotEmpty()) {
+            Text(
+                text = "Tap an item to remove it",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
+            )
         }
     }
 }
