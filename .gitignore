@@ -1,6 +1,9 @@
 # Local Specify CLI state (branch-specific feature pointer)
 .specify/feature.json
 
+# Git worktrees (local isolation; never commit worktree contents)
+.worktrees/
+
 # Kotlin / Gradle / IDE
 **/.gradle/
 **/build/
