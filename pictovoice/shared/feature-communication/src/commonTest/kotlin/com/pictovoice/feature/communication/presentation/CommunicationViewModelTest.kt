@@ -174,4 +174,45 @@ class CommunicationViewModelTest {
 
         assertEquals(listOf("yes"), vm.state.value.sentence.items.map { it.id })
     }
+
+    @Test
+    fun removePictogramAt_middle_item_preserves_remaining_order() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> = emptyList()
+                        override suspend fun getPictogramById(id: String): Pictogram? = null
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("water", "Water", "Water")))
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("help", "Help", "Help")))
+        vm.onEvent(CommunicationEvent.RemovePictogramAt(1))
+
+        assertEquals(listOf("yes", "help"), vm.state.value.sentence.items.map { it.id })
+    }
+
+    @Test
+    fun clearSentence_empties_sentence_strip() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> = emptyList()
+                        override suspend fun getPictogramById(id: String): Pictogram? = null
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("water", "Water", "Water")))
+        vm.onEvent(CommunicationEvent.ClearSentence)
+
+        assertTrue(vm.state.value.sentence.items.isEmpty())
+    }
 }
