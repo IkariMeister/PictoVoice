@@ -49,6 +49,7 @@ fun CommunicationScreen(
         state = state,
         feedbackMessage = feedbackMessage,
         onPictogramSelected = { viewModel.onEvent(CommunicationEvent.SelectPictogram(it)) },
+        onSentencePictogramTapped = { viewModel.onEvent(CommunicationEvent.RemovePictogramAt(it)) },
         onSpeakTapped = { viewModel.onEvent(CommunicationEvent.SpeakTapped) },
         onClearTapped = { viewModel.onEvent(CommunicationEvent.ClearSentence) },
         onSyncRequested = { viewModel.onEvent(CommunicationEvent.SyncRequested) },
@@ -62,6 +63,7 @@ private fun CommunicationScreenContent(
     state: CommunicationUiState,
     feedbackMessage: String?,
     onPictogramSelected: (Pictogram) -> Unit,
+    onSentencePictogramTapped: (Int) -> Unit,
     onSpeakTapped: () -> Unit,
     onClearTapped: () -> Unit,
     onSyncRequested: () -> Unit,
@@ -81,7 +83,10 @@ private fun CommunicationScreenContent(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        SentenceBuilderBar(sentencePictograms = state.sentence.items)
+        SentenceBuilderBar(
+            sentencePictograms = state.sentence.items,
+            onPictogramTapped = onSentencePictogramTapped,
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         PictogramGrid(
@@ -140,6 +145,7 @@ private fun CommunicationScreenPreview() {
                         ),
                 ),
             onPictogramSelected = {},
+            onSentencePictogramTapped = {},
             onSpeakTapped = {},
             onClearTapped = {},
             onSyncRequested = {},

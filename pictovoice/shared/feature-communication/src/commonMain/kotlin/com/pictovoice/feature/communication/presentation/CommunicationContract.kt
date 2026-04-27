@@ -11,6 +11,7 @@ data class CommunicationUiState(
 
 sealed interface CommunicationEvent {
     data class SelectPictogram(val pictogram: Pictogram) : CommunicationEvent
+    data class RemovePictogramAt(val index: Int) : CommunicationEvent
     data object ClearSentence : CommunicationEvent
     data object SpeakTapped : CommunicationEvent
     data object SyncRequested : CommunicationEvent
