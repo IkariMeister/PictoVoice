@@ -9,6 +9,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import com.pictovoice.server.routes.vocabularyRoutes
 
 fun main() {
     embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
@@ -23,5 +24,6 @@ fun Application.module() {
                 status = HttpStatusCode.OK,
             )
         }
+        vocabularyRoutes()
     }
 }

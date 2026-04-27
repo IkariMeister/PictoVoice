@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ApplicationTest {
     @Test
@@ -18,5 +19,50 @@ class ApplicationTest {
             val response = client.get("/health")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals("""{"status":"ok"}""", response.bodyAsText())
+        }
+
+    @Test
+    fun vocabulary_manifest_endpoint_returns_manifest_payload() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response = client.get("/v1/vocabulary/manifest")
+            val body = response.bodyAsText()
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertTrue(body.contains("\"revision\":\"revision-1\""))
+            assertTrue(body.contains("\"generatedAt\":\"2026-01-01T00:00:00Z\""))
+        }
+
+    @Test
+    fun vocabulary_delta_endpoint_returns_query_based_revision() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response = client.get("/v1/vocabulary/delta?since=revision-0")
+            val body = response.bodyAsText()
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertTrue(body.contains("\"revision\":\"revision-1\""))
+            assertTrue(body.contains("\"spokenText\":\"Yes\""))
+            assertTrue(body.contains("\"deletes\":[]"))
+        }
+
+    @Test
+    fun vocabulary_delta_without_since_returns_bad_request() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response = client.get("/v1/vocabulary/delta")
+            val body = response.bodyAsText()
+
+            assertEquals(HttpStatusCode.BadRequest, response.status)
+            assertTrue(body.contains("since"))
         }
 }
