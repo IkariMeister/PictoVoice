@@ -2,8 +2,10 @@ package com.pictovoice.server
 
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -134,5 +136,67 @@ class ApplicationTest {
 
             assertEquals(HttpStatusCode.BadRequest, response.status)
             assertTrue(response.bodyAsText().contains("Invalid registration payload"))
+        }
+
+    @Test
+    fun caregiver_layout_without_bearer_token_returns_unauthorized() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response = client.put("/v1/caregiver/layout") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"id":"layout-1"}""")
+            }
+
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertTrue(response.bodyAsText().contains("Missing or invalid bearer token"))
+        }
+
+    @Test
+    fun caregiver_layout_with_invalid_bearer_token_returns_unauthorized() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response =
+                client.put("/v1/caregiver/layout") {
+                    header("Authorization", "Bearer invalid-token")
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"id":"layout-1"}""")
+                }
+
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertTrue(response.bodyAsText().contains("Unauthorized caregiver token"))
+        }
+
+    @Test
+    fun caregiver_layout_with_valid_bearer_token_returns_ok() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response =
+                client.put("/v1/caregiver/layout") {
+                    header("Authorization", "Bearer caregiver-dev-token")
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """
+                        {
+                          "id":"layout-1",
+                          "rows":2,
+                          "columns":2,
+                          "cells":["yes","no",null,null],
+                          "version":"v1"
+                        }
+                        """.trimIndent(),
+                    )
+                }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertTrue(response.bodyAsText().contains("\"revision\":\"revision-2\""))
         }
 }
