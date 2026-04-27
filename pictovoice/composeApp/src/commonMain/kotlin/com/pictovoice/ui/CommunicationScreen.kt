@@ -23,6 +23,13 @@ import com.pictovoice.feature.communication.presentation.CommunicationUiState
 import com.pictovoice.feature.communication.presentation.CommunicationViewModel
 import kotlinx.coroutines.flow.onEach
 
+internal fun feedbackMessageFor(effect: CommunicationEffect): String =
+    when (effect) {
+        CommunicationEffect.EmptySentenceIgnored -> "Sentence is empty"
+        CommunicationEffect.SyncSkippedOffline -> "Offline: sync skipped"
+        CommunicationEffect.SyncCompleted -> "Synced successfully"
+    }
+
 @Composable
 fun CommunicationScreen(
     viewModel: CommunicationViewModel,
@@ -31,12 +38,7 @@ fun CommunicationScreen(
     val state by viewModel.state.collectAsState()
     var feedbackMessage by remember { mutableStateOf<String?>(null) }
     val effect by viewModel.effects.onEach { effect ->
-        feedbackMessage =
-            when (effect) {
-                CommunicationEffect.EmptySentenceIgnored -> "Sentence is empty"
-                CommunicationEffect.SyncSkippedOffline -> "Offline: sync skipped"
-                CommunicationEffect.SyncCompleted -> "Synced successfully"
-            }
+        feedbackMessage = feedbackMessageFor(effect)
     }.collectAsState(initial = null)
 
     if (effect != null) {
