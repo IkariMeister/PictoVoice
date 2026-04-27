@@ -14,11 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.ui.PictoVoiceTheme
 
 internal const val SpeakButtonDescription = "Speak sentence"
+internal const val PressedStateDescription = "Pressed"
+internal const val NotPressedStateDescription = "Not pressed"
 
 @Composable
 fun SpeakButton(
@@ -50,6 +53,7 @@ fun SpeakButton(
                 .heightIn(min = 56.dp)
                 .semantics {
                     contentDescription = SpeakButtonDescription
+                    stateDescription = if (isPressed) PressedStateDescription else NotPressedStateDescription
                 },
     ) {
         Text(

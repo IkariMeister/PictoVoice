@@ -10,7 +10,13 @@ import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.down
+import androidx.compose.ui.test.moveTo
+import androidx.compose.ui.test.up
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.semantics.SemanticsProperties
 import com.pictovoice.core.model.Pictogram
 import org.junit.Rule
 import org.junit.Test
@@ -87,5 +93,38 @@ class EditSentenceUiTest {
 
         composeRule.onNodeWithContentDescription(SpeakButtonDescription).assertExists()
         composeRule.onNodeWithContentDescription(CLEAR_BUTTON_DESCRIPTION).assertExists()
+    }
+
+    @Test
+    fun speakButton_pressed_state_toggles_during_touch_interaction() {
+        composeRule.setContent {
+            SpeakButton(
+                enabled = true,
+                isSpeaking = false,
+                onClick = {},
+            )
+        }
+
+        val speakButtonNode = composeRule.onNodeWithContentDescription(SpeakButtonDescription)
+        speakButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
+
+        speakButtonNode.performTouchInput {
+            val center = center
+            down(center)
+        }
+        speakButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, PressedStateDescription),
+        )
+
+        speakButtonNode.performTouchInput {
+            val center = center
+            moveTo(center)
+            up()
+        }
+        speakButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
     }
 }
