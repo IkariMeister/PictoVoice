@@ -25,9 +25,6 @@ kotlin {
             implementation("androidx.test:runner:1.6.2")
         }
 
-        androidMain.dependencies {
-            debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
-        }
     }
 }
 
