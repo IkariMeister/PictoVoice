@@ -26,13 +26,13 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 **Purpose**: Monorepo skeleton and tooling so shared code compiles for Android + iOS.
 
-- [ ] T001 Create `pictovoice/` directory tree per plan.md (empty `shared/domain`, `shared/data`, `shared/presentation`, `composeApp`, `androidApp`, `iosApp`, `caregiver-web`, `server`, `gradle`)
+- [ ] T001 Create `pictovoice/` directory tree per plan.md (empty `shared/core-*`, `shared/feature-vocabulary`, `shared/feature-communication`, `composeApp`, `androidApp`, `iosApp`, `caregiver-web`, `server`, `gradle`)
 - [ ] T002 Add root `pictovoice/settings.gradle.kts` including all KMP modules and version catalog reference
 - [ ] T003 Add `pictovoice/gradle/libs.versions.toml` with Kotlin, Compose Multiplatform, Coroutines, Ktor Client, SQLDelight (or chosen local DB), Sentry KMP, Android/iOS minimum SDKs
-- [ ] T004 [P] Configure `pictovoice/shared/domain/build.gradle.kts` as `kotlin { jvm(); androidTarget(); iosArm64(); iosSimulatorArm64() }` with `commonMain` only dependencies appropriate for pure Kotlin
-- [ ] T005 [P] Configure `pictovoice/shared/data/build.gradle.kts` with SQLDelight (or chosen) and Ktor Client in commonMain + platform drivers
-- [ ] T006 [P] Configure `pictovoice/shared/presentation/build.gradle.kts` with Compose runtime and ViewModel-friendly deps (no Android-only UI imports in commonMain)
-- [ ] T007 Configure `pictovoice/composeApp/build.gradle.kts` as Compose Multiplatform application module depending on `shared/presentation`, `shared/data`, `shared/domain`
+- [ ] T004 [P] Configure `pictovoice/shared/core-model/build.gradle.kts` as `kotlin { jvm(); androidTarget(); iosArm64(); iosSimulatorArm64() }` with `commonMain` dependencies appropriate for pure shared models
+- [ ] T005 [P] Configure `pictovoice/shared/feature-vocabulary/build.gradle.kts` with SQLDelight (or chosen) and Ktor Client in commonMain + platform drivers
+- [ ] T006 [P] Configure `pictovoice/shared/feature-communication/build.gradle.kts` with Compose runtime and ViewModel-friendly deps (no Android-only UI imports in commonMain)
+- [ ] T007 Configure `pictovoice/composeApp/build.gradle.kts` as Compose Multiplatform application module depending on `shared/feature-communication`, `shared/feature-vocabulary`, `shared/core-*`
 - [ ] T008 [P] Wire `pictovoice/androidApp/build.gradle.kts` and `pictovoice/iosApp` entry targets to embed `composeApp` and set application IDs / bundle IDs
 
 ---
@@ -43,22 +43,22 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 **⚠️ CRITICAL**: No user story phase starts until this checkpoint passes.
 
-- [ ] T009 Define `Pictogram`, `Sentence`, `GridLayout` immutable models in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/model/`
-- [ ] T010 Define domain command types (e.g. `AddPictogram`, `RemovePictogramAt`, `ClearSentence`, `SpeakSentence`, `SyncVocabulary`) in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/command/`
-- [ ] T011 Define `CommandHandler` / dispatcher interface routing commands to use cases in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/dispatcher/`
-- [ ] T012 Create `TextToSpeech` `expect` interface in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/tts/TextToSpeech.kt` and document contract (queue utterances, language fixed v1)
+- [ ] T009 Define `Pictogram`, `Sentence`, `GridLayout` immutable models in `pictovoice/shared/core-model/src/commonMain/kotlin/com/pictovoice/core/model/`
+- [ ] T010 Define domain command types (e.g. `AddPictogram`, `RemovePictogramAt`, `ClearSentence`, `SpeakSentence`, `SyncVocabulary`) in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/`
+- [ ] T011 Define `CommandHandler` / dispatcher interface routing commands to use cases in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/`
+- [ ] T012 Create `TextToSpeech` `expect` interface in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/TextToSpeechEngine.kt` and document contract (queue utterances, language fixed v1)
 - [ ] T013 Implement `TextToSpeech` `actual` in `pictovoice/androidApp/src/main/kotlin/com/pictovoice/tts/AndroidTextToSpeech.kt` using Android `TextToSpeech` API
 - [ ] T014 Implement `TextToSpeech` `actual` in `pictovoice/iosApp/iosApp/.../IosTextToSpeech.swift` or Kotlin/Native bridge per chosen template under `pictovoice/iosApp/`
-- [ ] T015 Add SQLDelight schema for `pictogram`, `layout_cell`, `vocabulary_meta` matching [data-model.md](./data-model.md) in `pictovoice/shared/data/src/commonMain/sqldelight/com/pictovoice/data/Vocabulary.sq`
-- [ ] T016 Implement `LocalVocabularyDataSource` in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/local/LocalVocabularyDataSource.kt` wrapping SQLDelight driver
-- [ ] T017 Add bundled seed vocabulary JSON/SQL under `pictovoice/shared/data/src/commonMain/resources/` and loader into local DB on first launch
-- [ ] T018 Define `VocabularyRepository` interface in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/repo/VocabularyRepository.kt` (local-first; remote optional later)
-- [ ] T019 Implement `VocabularyRepository` default in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/repo/DefaultVocabularyRepository.kt` using only `LocalVocabularyDataSource` initially
+- [ ] T015 Add SQLDelight schema for `pictogram`, `layout_cell`, `vocabulary_meta` matching [data-model.md](./data-model.md) in `pictovoice/shared/feature-vocabulary/src/commonMain/sqldelight/com/pictovoice/feature/vocabulary/Vocabulary.sq`
+- [ ] T016 Implement `LocalVocabularyDataSource` in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/data/local/LocalVocabularyDataSource.kt` wrapping SQLDelight driver
+- [ ] T017 Add bundled seed vocabulary JSON/SQL under `pictovoice/shared/feature-vocabulary/src/commonMain/resources/` and loader into local DB on first launch
+- [ ] T018 Define `VocabularyRepository` interface in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/domain/VocabularyRepository.kt` (local-first; remote optional later)
+- [ ] T019 Implement `VocabularyRepository` default in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/data/DefaultVocabularyRepository.kt` using only `LocalVocabularyDataSource` initially
 - [ ] T020 Initialize Sentry KMP in `pictovoice/androidApp/src/main/kotlin/com/pictovoice/PictoVoiceApp.kt` with DSN from build config (no sentence text in breadcrumbs)
 - [ ] T021 Initialize Sentry KMP in `pictovoice/iosApp` entry point analogous to T020
-- [ ] T022 Add `SentryBreadcrumbs` helper in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/telemetry/SentryBreadcrumbs.kt` wrapping safe non-PII events (`symbol_id`, `event_name` only)
+- [ ] T022 Add `SentryBreadcrumbs` helper in `pictovoice/shared/core-telemetry/src/commonMain/kotlin/com/pictovoice/core/telemetry/SentryBreadcrumbs.kt` wrapping safe non-PII events (`symbol_id`, `event_name` only)
 - [ ] T023 [P] Add contract test scaffolding for `contracts/openapi.yaml` in `pictovoice/server/src/test/kotlin/com/pictovoice/server/contract/OpenApiContractTest.kt`
-- [ ] T024 [P] Add shared test fixtures module for sample pictograms/sentences in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/fixtures/`
+- [ ] T024 [P] Add shared test fixtures module for sample pictograms/sentences in `pictovoice/shared/core-model/src/commonTest/kotlin/com/pictovoice/core/model/fixtures/`
 
 **Checkpoint**: Domain models compile; local DB + seed load; TTS no-ops or speaks on both platforms; Sentry captures test crash.
 
@@ -72,15 +72,15 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### Tests for User Story 1
 
-- [ ] T025 [P] [US1] Add unit tests for `AddPictogram` and `SpeakSentence` handlers in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/usecase/SpeakSentenceHandlerTest.kt`
-- [ ] T026 [P] [US1] Add MVI reducer/state tests for `CommunicationViewModel` in `pictovoice/shared/presentation/src/commonTest/kotlin/com/pictovoice/presentation/communication/CommunicationViewModelTest.kt`
+- [ ] T025 [P] [US1] Add unit tests for `AddPictogram` and `SpeakSentence` handlers in `pictovoice/shared/feature-communication/src/commonTest/kotlin/com/pictovoice/feature/communication/domain/SpeakSentenceHandlerTest.kt`
+- [ ] T026 [P] [US1] Add MVI reducer/state tests for `CommunicationViewModel` in `pictovoice/shared/feature-communication/src/commonTest/kotlin/com/pictovoice/feature/communication/presentation/CommunicationViewModelTest.kt`
 - [ ] T027 [P] [US1] Add Compose UI smoke test for sentence build + speak button flow in `pictovoice/composeApp/src/commonTest/kotlin/com/pictovoice/ui/CommunicationScreenTest.kt`
 
 ### Implementation for User Story 1
 
-- [ ] T028 [US1] Add `CommunicationUiState`, `CommunicationEvent`, `CommunicationEffect` in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/communication/CommunicationContract.kt`
-- [ ] T029 [US1] Implement `CommunicationViewModel` (MVI store) in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/communication/CommunicationViewModel.kt` wiring `CommandHandler` + `VocabularyRepository` + `TextToSpeech`
-- [ ] T030 [US1] Implement `SpeakSentence` and `AddPictogram` handlers in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/` consuming repository + TTS port
+- [ ] T028 [US1] Add `CommunicationUiState`, `CommunicationEvent`, `CommunicationEffect` in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/presentation/CommunicationContract.kt`
+- [ ] T029 [US1] Implement `CommunicationViewModel` (MVI store) in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/presentation/CommunicationViewModel.kt` wiring `CommandHandler` + `VocabularyRepository` + `TextToSpeech`
+- [ ] T030 [US1] Implement `SpeakSentence` and `AddPictogram` handlers in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/` consuming repository + TTS port
 - [ ] T031 [US1] Add high-contrast theme (`PictoVoiceColors`, `PictoVoiceTypography`) in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/theme/Theme.kt`
 - [ ] T032 [US1] Implement `SentenceBuilderBar` composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/SentenceBuilderBar.kt` showing ordered pictograms
 - [ ] T033 [US1] Implement `PictogramGrid` composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/PictogramGrid.kt` with minimum touch target ≥ 48.dp (FR-002)
@@ -88,7 +88,7 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 - [ ] T035 [US1] Compose `CommunicationScreen` in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/CommunicationScreen.kt` binding ViewModel state/events
 - [ ] T036 [US1] Set `CommunicationScreen` as start destination in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/App.kt`
 - [ ] T037 [US1] On pictogram tap, call `SentryBreadcrumbs.record("pictogram_selected", mapOf("id" to pictogramId))` in `CommunicationViewModel`
-- [ ] T038 [US1] Handle empty Speak per spec edge case (non-blocking prompt or no-op) in `SpeakSentence` handler in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/SpeakSentenceHandler.kt`
+- [ ] T038 [US1] Handle empty Speak per spec edge case (non-blocking prompt or no-op) in `SpeakSentence` handler in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/SpeakSentenceHandler.kt`
 
 **Checkpoint**: US1 demoable on Android + iOS simulators with seeded vocabulary.
 
@@ -102,15 +102,15 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### Tests for User Story 2
 
-- [ ] T039 [P] [US2] Add repository integration tests for offline-first invariants in `pictovoice/shared/data/src/commonTest/kotlin/com/pictovoice/data/repo/DefaultVocabularyRepositoryOfflineTest.kt`
+- [ ] T039 [P] [US2] Add repository integration tests for offline-first invariants in `pictovoice/shared/feature-vocabulary/src/commonTest/kotlin/com/pictovoice/feature/vocabulary/data/DefaultVocabularyRepositoryOfflineTest.kt`
 - [ ] T040 [P] [US2] Add platform smoke test for Speak in airplane/offline mode in `pictovoice/androidApp/src/androidTest/kotlin/com/pictovoice/OfflineSpeakTest.kt` and `pictovoice/iosApp/.../OfflineSpeakTest.swift`
 
 ### Implementation for User Story 2
 
-- [ ] T041 [US2] Audit `CommunicationViewModel` and repository paths in `pictovoice/shared/presentation/.../CommunicationViewModel.kt` to ensure no `RemoteVocabularyDataSource` call before Speak
-- [ ] T042 [US2] Document offline guarantee in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/repo/DefaultVocabularyRepository.kt` KDoc (local-first invariant)
-- [ ] T043 [US2] Add `NetworkMonitor` `expect`/`actual` stubs in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/network/NetworkMonitor.kt` (optional UI badge deferred) ensuring sync jobs no-op when offline without blocking UI thread
-- [ ] T044 [US2] Verify seed assets in T017 include all pictograms needed for acceptance demo; expand `pictovoice/shared/data/src/commonMain/resources/seed/` if gaps found
+- [ ] T041 [US2] Audit `CommunicationViewModel` and repository paths in `pictovoice/shared/feature-communication/.../CommunicationViewModel.kt` to ensure no `RemoteVocabularyDataSource` call before Speak
+- [ ] T042 [US2] Document offline guarantee in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/data/DefaultVocabularyRepository.kt` KDoc (local-first invariant)
+- [ ] T043 [US2] Add `NetworkMonitor` `expect`/`actual` stubs in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/data/network/NetworkMonitor.kt` (optional UI badge deferred) ensuring sync jobs no-op when offline without blocking UI thread
+- [ ] T044 [US2] Verify seed assets in T017 include all pictograms needed for acceptance demo; expand `pictovoice/shared/feature-vocabulary/src/commonMain/resources/seed/` if gaps found
 
 **Checkpoint**: Manual US2 independent test passes on both platforms.
 
@@ -124,13 +124,13 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### Tests for User Story 3
 
-- [ ] T045 [P] [US3] Add unit tests for `RemovePictogramAt` / `ClearSentence` handlers in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlersTest.kt`
+- [ ] T045 [P] [US3] Add unit tests for `RemovePictogramAt` / `ClearSentence` handlers in `pictovoice/shared/feature-communication/src/commonTest/kotlin/com/pictovoice/feature/communication/domain/EditSentenceHandlersTest.kt`
 - [ ] T046 [P] [US3] Add Compose UI tests for remove/clear + visual pressed states in `pictovoice/composeApp/src/commonTest/kotlin/com/pictovoice/ui/EditSentenceUiTest.kt`
 
 ### Implementation for User Story 3
 
-- [ ] T047 [US3] Implement `RemovePictogramAt` and `ClearSentence` handlers in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlers.kt`
-- [ ] T048 [US3] Expose remove/clear events from `CommunicationViewModel` in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/communication/CommunicationViewModel.kt`
+- [ ] T047 [US3] Implement `RemovePictogramAt` and `ClearSentence` handlers in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/EditSentenceHandlers.kt`
+- [ ] T048 [US3] Expose remove/clear events from `CommunicationViewModel` in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/presentation/CommunicationViewModel.kt`
 - [ ] T049 [US3] Add per-cell `Modifier` for press indication (border/color) in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/PictogramGrid.kt` and `SpeakButton.kt`
 - [ ] T050 [US3] Add swipe/remove affordance on `SentenceBuilderBar` items in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/SentenceBuilderBar.kt`
 - [ ] T051 [US3] Add `ClearSentence` control composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/ClearSentenceButton.kt` meeting FR-002 size
@@ -152,8 +152,8 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 - [ ] T053 [P] [US4] Add server contract tests for `/v1/vocabulary/*`, `/v1/devices/register`, `/v1/caregiver/layout` in `pictovoice/server/src/test/kotlin/com/pictovoice/server/contract/VocabularyApiContractTest.kt`
 - [ ] T054 [P] [US4] Add integration test for revision bump + push dispatch trigger in `pictovoice/server/src/test/kotlin/com/pictovoice/server/integration/VocabularyPublishFlowTest.kt`
-- [ ] T055 [P] [US4] Add repository sync tests (manifest + delta apply atomicity) in `pictovoice/shared/data/src/commonTest/kotlin/com/pictovoice/data/repo/VocabularySyncRepositoryTest.kt`
-- [ ] T056 [P] [US4] Add prediction engine tests validating no network dependency in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/prediction/OnDevicePredictionEngineTest.kt`
+- [ ] T055 [P] [US4] Add repository sync tests (manifest + delta apply atomicity) in `pictovoice/shared/feature-vocabulary/src/commonTest/kotlin/com/pictovoice/feature/vocabulary/data/VocabularySyncRepositoryTest.kt`
+- [ ] T056 [P] [US4] Add prediction engine tests validating no network dependency in `pictovoice/shared/feature-communication/src/commonTest/kotlin/com/pictovoice/feature/communication/domain/prediction/OnDevicePredictionEngineTest.kt`
 - [ ] T057 [P] [US4] Add caregiver web e2e test for auth-before-save flow in `pictovoice/caregiver-web/tests/e2e/caregiver-save-auth.spec.ts`
 
 ### Implementation for User Story 4
@@ -167,9 +167,9 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### Remote data & sync (mobile)
 
-- [ ] T064 [US4] Implement DTO mappers + `RemoteVocabularyDataSource` using Ktor in `pictovoice/shared/data/src/commonMain/kotlin/com/pictovoice/data/remote/RemoteVocabularyDataSource.kt`
-- [ ] T065 [US4] Extend `DefaultVocabularyRepository` in `pictovoice/shared/data/.../DefaultVocabularyRepository.kt` to merge remote deltas atomically after manifest compare
-- [ ] T066 [US4] Implement `SyncVocabularyCommand` handler invoking repository pull in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/SyncVocabularyHandler.kt`
+- [ ] T064 [US4] Implement DTO mappers + `RemoteVocabularyDataSource` using Ktor in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/data/remote/RemoteVocabularyDataSource.kt`
+- [ ] T065 [US4] Extend `DefaultVocabularyRepository` in `pictovoice/shared/feature-vocabulary/.../DefaultVocabularyRepository.kt` to merge remote deltas atomically after manifest compare
+- [ ] T066 [US4] Implement `SyncVocabularyCommand` handler invoking repository pull in `pictovoice/shared/feature-vocabulary/src/commonMain/kotlin/com/pictovoice/feature/vocabulary/domain/SyncVocabularyHandler.kt`
 
 ### Push receivers (mobile)
 
@@ -178,9 +178,9 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### On-device prediction (FR-009)
 
-- [ ] T069 [US4] Implement `OnDevicePredictionEngine` in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/prediction/OnDevicePredictionEngine.kt` using time-of-day + session history only (no network)
+- [ ] T069 [US4] Implement `OnDevicePredictionEngine` in `pictovoice/shared/feature-communication/src/commonMain/kotlin/com/pictovoice/feature/communication/domain/prediction/OnDevicePredictionEngine.kt` using time-of-day + session history only (no network)
 - [ ] T070 [US4] Add `PredictionStrip` composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/PredictionStrip.kt` and wire to `CommunicationViewModel`
-- [ ] T071 [US4] Implement append-on-select behavior for prediction taps in `pictovoice/shared/presentation/.../CommunicationViewModel.kt`
+- [ ] T071 [US4] Implement append-on-select behavior for prediction taps in `pictovoice/shared/feature-communication/.../CommunicationViewModel.kt`
 
 ### Caregiver web
 
@@ -202,12 +202,12 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 - [ ] T076 [P] Add `pictovoice/README.md` linking to `specs/002-kmp-pictovoice-aac/quickstart.md` and environment variables (`SENTRY_DSN`, server base URL)
 - [ ] T077 Run `bash /Users/ikari/Projects/PictoVoice/.specify/scripts/bash/update-agent-context.sh cursor-agent` after major stack changes
-- [ ] T078 [P] Add GitHub Action workflow `.github/workflows/pictovoice-ci.yml` running domain/data/presentation tests + Android assemble + server tests
+- [ ] T078 [P] Add GitHub Action workflow `.github/workflows/pictovoice-ci.yml` running core/feature shared tests + Android assemble + server tests
 - [ ] T079 [P] Add CI step validating OpenAPI contract compatibility against `specs/002-kmp-pictovoice-aac/contracts/openapi.yaml` in `.github/workflows/pictovoice-ci.yml`
 - [ ] T080 Verify FR-012 checklist (feature parity Android vs iOS) in `specs/002-kmp-pictovoice-aac/plan.md` appendix note or `pictovoice/docs/platform-parity.md`
 - [ ] T081 Add ProGuard/R8 consumer rules file `pictovoice/androidApp/proguard-rules.pro` for Ktor/Sentry if minify enabled
 - [ ] T082 [P] Add privacy manifest / usage descriptions for microphone if ever used (likely not) and network usage strings in `pictovoice/iosApp/Info.plist`
-- [ ] T083 Review Sentry events to confirm no sentence text leaves device in `pictovoice/shared/presentation/.../SentryBreadcrumbs.kt`
+- [ ] T083 Review Sentry events to confirm no sentence text leaves device in `pictovoice/shared/core-telemetry/.../SentryBreadcrumbs.kt`
 
 ---
 
