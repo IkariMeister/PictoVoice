@@ -3,6 +3,7 @@ package com.pictovoice.feature.communication.presentation
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.telemetry.Telemetry
 import com.pictovoice.feature.communication.domain.TextToSpeechEngine
+import com.pictovoice.feature.vocabulary.data.network.NetworkMonitor
 import com.pictovoice.feature.vocabulary.domain.VocabularyRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,6 +11,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 
@@ -28,6 +30,7 @@ class CommunicationViewModelTest {
             CommunicationViewModel(
                 vocabularyRepository = repo,
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
         delay(10)
         vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
@@ -44,6 +47,7 @@ class CommunicationViewModelTest {
                         override suspend fun getPictogramById(id: String): Pictogram? = null
                     },
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SpeakTapped)
@@ -73,6 +77,7 @@ class CommunicationViewModelTest {
                     },
                 textToSpeechEngine = tts,
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
@@ -82,5 +87,52 @@ class CommunicationViewModelTest {
         assertEquals("Yes", spokenText)
         assertFalse(vm.state.value.isSpeaking)
         assertTrue(vm.state.value.sentence.items.isNotEmpty())
+    }
+
+    @Test
+    fun syncRequested_offline_emitsSkippedOfflineEffect() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> = emptyList()
+                        override suspend fun getPictogramById(id: String): Pictogram? = null
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                networkMonitor = object : NetworkMonitor {
+                    override fun isOnline(): Boolean = false
+                },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SyncRequested)
+
+        val effect = withTimeout(1_000) { vm.effects.first() }
+        assertEquals(CommunicationEffect.SyncSkippedOffline, effect)
+    }
+
+    @Test
+    fun syncRequested_online_emitsCompletedEffect() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> =
+                            listOf(Pictogram("yes", "Yes", "Yes"))
+
+                        override suspend fun getPictogramById(id: String): Pictogram? =
+                            Pictogram("yes", "Yes", "Yes")
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                networkMonitor = object : NetworkMonitor {
+                    override fun isOnline(): Boolean = true
+                },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SyncRequested)
+
+        val effect = withTimeout(1_000) { vm.effects.first() }
+        assertEquals(CommunicationEffect.SyncCompleted, effect)
     }
 }

@@ -22,6 +22,9 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.uiToolingPreview)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
 
         androidInstrumentedTest.dependencies {
             implementation("androidx.compose.ui:ui-test-junit4:1.7.5")
