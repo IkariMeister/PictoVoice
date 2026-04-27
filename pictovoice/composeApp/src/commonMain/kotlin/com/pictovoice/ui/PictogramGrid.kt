@@ -23,11 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
 
 private val MinTouchTarget = 48.dp
+internal fun pictogramCellDescription(label: String): String = "Add $label"
 
 @Composable
 fun PictogramGrid(
@@ -72,6 +77,10 @@ private fun PictogramCell(
                     indication = null,
                     onClick = onClick,
                 ),
+                .semantics {
+                    role = Role.Button
+                    contentDescription = pictogramCellDescription(pictogram.label)
+                },
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(

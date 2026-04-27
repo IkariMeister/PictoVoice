@@ -13,8 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.ui.PictoVoiceTheme
+
+internal const val SpeakButtonDescription = "Speak sentence"
 
 @Composable
 fun SpeakButton(
@@ -40,7 +44,13 @@ fun SpeakButton(
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
-        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+                .semantics {
+                    contentDescription = SpeakButtonDescription
+                },
     ) {
         Text(
             text = if (isSpeaking) "Speaking..." else "Speak",

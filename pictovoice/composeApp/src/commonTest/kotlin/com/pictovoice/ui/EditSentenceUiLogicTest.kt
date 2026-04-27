@@ -35,4 +35,11 @@ class EditSentenceUiLogicTest {
     fun removableLabel_appends_remove_hint() {
         assertEquals("Water (remove)", removableLabelFor("Water"))
     }
+
+    @Test
+    fun accessibilityLabels_are_stable_for_core_controls() {
+        assertEquals("Add Water", pictogramCellDescription("Water"))
+        assertEquals("Speak sentence", SpeakButtonDescription)
+        assertEquals("Clear sentence", CLEAR_BUTTON_DESCRIPTION)
+    }
 }
