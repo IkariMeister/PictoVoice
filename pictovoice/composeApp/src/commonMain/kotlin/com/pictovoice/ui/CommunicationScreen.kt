@@ -105,12 +105,10 @@ private fun CommunicationScreenContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
+        ClearSentenceButton(
             enabled = state.sentence.items.isNotEmpty(),
             onClick = onClearTapped,
-        ) {
-            Text("Clear")
-        }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
