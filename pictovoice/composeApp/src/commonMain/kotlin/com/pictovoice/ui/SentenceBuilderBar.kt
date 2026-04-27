@@ -13,11 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
 
 internal fun removableLabelFor(label: String): String = "$label (remove)"
+internal fun sentenceItemContentDescription(label: String): String = "Remove $label from sentence"
 
 @Composable
 fun SentenceBuilderBar(
@@ -44,7 +47,10 @@ fun SentenceBuilderBar(
                     Text(
                         text = removableLabelFor(pictogram.label),
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.clickable { onPictogramTapped(index) },
+                        modifier =
+                            Modifier
+                                .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
+                                .clickable { onPictogramTapped(index) },
                     )
                 }
             }
