@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
 }
 
 kotlin {
@@ -9,5 +10,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {}
+    }
+}
+
+android {
+    namespace = "com.pictovoice.core.telemetry"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 26
     }
 }

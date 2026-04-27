@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
 }
 
 kotlin {
@@ -9,5 +10,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {}
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+    }
+}
+
+android {
+    namespace = "com.pictovoice.core.model"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 26
     }
 }
