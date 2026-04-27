@@ -135,4 +135,43 @@ class CommunicationViewModelTest {
         val effect = withTimeout(1_000) { vm.effects.first() }
         assertEquals(CommunicationEffect.SyncCompleted, effect)
     }
+
+    @Test
+    fun removePictogramAt_removes_item_from_sentence() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> = emptyList()
+                        override suspend fun getPictogramById(id: String): Pictogram? = null
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("water", "Water", "Water")))
+        vm.onEvent(CommunicationEvent.RemovePictogramAt(0))
+
+        assertEquals(listOf("water"), vm.state.value.sentence.items.map { it.id })
+    }
+
+    @Test
+    fun removePictogramAt_out_of_bounds_keeps_sentence_unchanged() = runTest {
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository =
+                    object : VocabularyRepository {
+                        override suspend fun listPictograms(): List<Pictogram> = emptyList()
+                        override suspend fun getPictogramById(id: String): Pictogram? = null
+                    },
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
+        vm.onEvent(CommunicationEvent.RemovePictogramAt(10))
+
+        assertEquals(listOf("yes"), vm.state.value.sentence.items.map { it.id })
+    }
 }

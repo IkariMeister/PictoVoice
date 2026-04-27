@@ -7,6 +7,12 @@ import com.pictovoice.feature.vocabulary.domain.VocabularyRepository
 fun addPictogram(sentence: Sentence, pictogram: Pictogram): Sentence =
     sentence.copy(items = sentence.items + pictogram)
 
+fun removePictogramAt(sentence: Sentence, index: Int): Sentence {
+    if (index !in sentence.items.indices) return sentence
+    val next = sentence.items.toMutableList().apply { removeAt(index) }
+    return sentence.copy(items = next)
+}
+
 fun clearSentence(): Sentence = Sentence(emptyList())
 
 suspend fun speakSentence(

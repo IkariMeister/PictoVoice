@@ -1,6 +1,7 @@
 package com.pictovoice.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import com.pictovoice.core.ui.PictoVoiceTheme
 @Composable
 fun SentenceBuilderBar(
     sentencePictograms: List<Pictogram>,
+    onPictogramTapped: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -32,8 +34,12 @@ fun SentenceBuilderBar(
         if (sentencePictograms.isEmpty()) {
             Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
         } else {
-            sentencePictograms.forEach { pictogram ->
-                Text(text = pictogram.label, color = MaterialTheme.colorScheme.onSurface)
+            sentencePictograms.forEachIndexed { index, pictogram ->
+                Text(
+                    text = pictogram.label,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.clickable { onPictogramTapped(index) },
+                )
             }
         }
     }

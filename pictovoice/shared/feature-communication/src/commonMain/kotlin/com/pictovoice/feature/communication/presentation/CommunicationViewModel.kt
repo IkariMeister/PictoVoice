@@ -6,6 +6,7 @@ import com.pictovoice.feature.communication.domain.NoopTextToSpeechEngine
 import com.pictovoice.feature.communication.domain.TextToSpeechEngine
 import com.pictovoice.feature.communication.domain.addPictogram
 import com.pictovoice.feature.communication.domain.clearSentence
+import com.pictovoice.feature.communication.domain.removePictogramAt
 import com.pictovoice.feature.communication.domain.speakSentence
 import com.pictovoice.feature.vocabulary.data.InMemoryVocabularyRepository
 import com.pictovoice.feature.vocabulary.data.network.NetworkMonitor
@@ -53,6 +54,8 @@ class CommunicationViewModel(
                     telemetry.event("pictogram_selected", mapOf("id" to event.pictogram.id))
                     _state.value.copy(sentence = addPictogram(_state.value.sentence, event.pictogram))
                 }
+                is CommunicationEvent.RemovePictogramAt ->
+                    _state.value.copy(sentence = removePictogramAt(_state.value.sentence, event.index))
                 CommunicationEvent.ClearSentence ->
                     _state.value.copy(sentence = clearSentence())
                 CommunicationEvent.SpeakTapped -> {
