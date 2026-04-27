@@ -11,6 +11,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 
@@ -29,6 +30,7 @@ class CommunicationViewModelTest {
             CommunicationViewModel(
                 vocabularyRepository = repo,
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
         delay(10)
         vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
@@ -45,6 +47,7 @@ class CommunicationViewModelTest {
                         override suspend fun getPictogramById(id: String): Pictogram? = null
                     },
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SpeakTapped)
@@ -74,6 +77,7 @@ class CommunicationViewModelTest {
                     },
                 textToSpeechEngine = tts,
                 telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("yes", "Yes", "Yes")))
@@ -98,6 +102,7 @@ class CommunicationViewModelTest {
                 networkMonitor = object : NetworkMonitor {
                     override fun isOnline(): Boolean = false
                 },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SyncRequested)
@@ -122,6 +127,7 @@ class CommunicationViewModelTest {
                 networkMonitor = object : NetworkMonitor {
                     override fun isOnline(): Boolean = true
                 },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
             )
 
         vm.onEvent(CommunicationEvent.SyncRequested)
