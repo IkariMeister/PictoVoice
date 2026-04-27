@@ -1,8 +1,12 @@
 package com.pictovoice.server
 
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.server.testing.testApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,5 +68,71 @@ class ApplicationTest {
 
             assertEquals(HttpStatusCode.BadRequest, response.status)
             assertTrue(body.contains("since"))
+        }
+
+    @Test
+    fun device_register_with_valid_payload_returns_no_content() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response =
+                client.post("/v1/devices/register") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """
+                        {
+                          "platform":"android",
+                          "token":"fcm-token-123",
+                          "deviceId":"device-42"
+                        }
+                        """.trimIndent(),
+                    )
+                }
+
+            assertEquals(HttpStatusCode.NoContent, response.status)
+            assertEquals("", response.bodyAsText())
+        }
+
+    @Test
+    fun device_register_without_required_fields_returns_bad_request() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response =
+                client.post("/v1/devices/register") {
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"platform":"android"}""")
+                }
+
+            assertEquals(HttpStatusCode.BadRequest, response.status)
+            assertTrue(response.bodyAsText().contains("Invalid JSON body"))
+        }
+
+    @Test
+    fun device_register_with_invalid_platform_returns_bad_request() =
+        testApplication {
+            application {
+                module()
+            }
+
+            val response =
+                client.post("/v1/devices/register") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """
+                        {
+                          "platform":"web",
+                          "token":"token"
+                        }
+                        """.trimIndent(),
+                    )
+                }
+
+            assertEquals(HttpStatusCode.BadRequest, response.status)
+            assertTrue(response.bodyAsText().contains("Invalid registration payload"))
         }
 }
