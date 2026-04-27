@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertExists
@@ -28,10 +29,15 @@ class EditSentenceUiTest {
     @Test
     fun tapping_sentence_item_removes_that_item() {
         composeRule.setContent {
-            var sentence by mutableStateOf(listOf(
-                Pictogram("yes", "Yes", "Yes"),
-                Pictogram("water", "Water", "Water"),
-            ))
+            var sentence by
+                remember {
+                    mutableStateOf(
+                        listOf(
+                            Pictogram("yes", "Yes", "Yes"),
+                            Pictogram("water", "Water", "Water"),
+                        ),
+                    )
+                }
 
             SentenceBuilderBar(
                 sentencePictograms = sentence,
@@ -49,10 +55,15 @@ class EditSentenceUiTest {
     @Test
     fun tapping_clear_button_empties_sentence_strip() {
         composeRule.setContent {
-            var sentence by mutableStateOf(listOf(
-                Pictogram("yes", "Yes", "Yes"),
-                Pictogram("water", "Water", "Water"),
-            ))
+            var sentence by
+                remember {
+                    mutableStateOf(
+                        listOf(
+                            Pictogram("yes", "Yes", "Yes"),
+                            Pictogram("water", "Water", "Water"),
+                        ),
+                    )
+                }
 
             Column {
                 SentenceBuilderBar(
