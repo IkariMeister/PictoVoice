@@ -8,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.pictovoice.core.ui.PictoVoiceTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SpeakButton(
@@ -25,5 +27,29 @@ fun SpeakButton(
             text = if (isSpeaking) "Speaking..." else "Speak",
             style = MaterialTheme.typography.titleLarge,
         )
+    }
+}
+
+@Preview
+@Composable
+private fun SpeakButtonEnabledPreview() {
+    PictoVoiceTheme {
+        SpeakButton(enabled = true, isSpeaking = false, onClick = {})
+    }
+}
+
+@Preview
+@Composable
+private fun SpeakButtonDisabledPreview() {
+    PictoVoiceTheme {
+        SpeakButton(enabled = false, isSpeaking = false, onClick = {})
+    }
+}
+
+@Preview
+@Composable
+private fun SpeakButtonSpeakingPreview() {
+    PictoVoiceTheme {
+        SpeakButton(enabled = false, isSpeaking = true, onClick = {})
     }
 }

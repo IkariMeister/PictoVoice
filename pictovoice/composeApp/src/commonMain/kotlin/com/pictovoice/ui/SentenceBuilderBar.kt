@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
+import com.pictovoice.core.ui.PictoVoiceTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SentenceBuilderBar(
@@ -35,5 +37,27 @@ fun SentenceBuilderBar(
                 Text(text = pictogram.label, color = MaterialTheme.colorScheme.onSurface)
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SentenceBuilderBarPreview() {
+    PictoVoiceTheme {
+        SentenceBuilderBar(
+            sentencePictograms =
+                listOf(
+                    Pictogram("yes", "Yes", "Yes"),
+                    Pictogram("water", "Water", "Water"),
+                ),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SentenceBuilderBarEmptyPreview() {
+    PictoVoiceTheme {
+        SentenceBuilderBar(sentencePictograms = emptyList())
     }
 }

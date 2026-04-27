@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -17,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
+import com.pictovoice.core.ui.PictoVoiceTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val MinTouchTarget = 48.dp
 
@@ -50,5 +53,22 @@ fun PictogramGrid(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PictogramGridPreview() {
+    PictoVoiceTheme {
+        PictogramGrid(
+            pictograms =
+                listOf(
+                    Pictogram("yes", "Yes", "Yes"),
+                    Pictogram("no", "No", "No"),
+                    Pictogram("water", "Water", "Water"),
+                    Pictogram("help", "Help", "Help"),
+                ),
+            onPictogramSelected = {},
+        )
     }
 }
