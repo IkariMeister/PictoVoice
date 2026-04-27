@@ -12,17 +12,14 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared:core-ui"))
-            implementation(project(":shared:feature-communication"))
             implementation(compose.runtime)
-            implementation(compose.foundation)
             implementation(compose.material3)
         }
     }
 }
 
 android {
-    namespace = "com.pictovoice.composeapp"
+    namespace = "com.pictovoice.core.ui"
     compileSdk = 35
     defaultConfig {
         minSdk = 26
