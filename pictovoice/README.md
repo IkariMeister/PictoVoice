@@ -48,3 +48,16 @@ Snapshot tests are implemented in:
 
 - Tests are currently guarded with `Assume.assumeTrue(...)` while goldens are uninitialized.
 - Once constants are set, snapshot drift will fail tests and require intentional golden updates.
+
+## Assistive touch compatibility (US3)
+
+To preserve platform accessibility behavior, interactive controls in `composeApp/src/commonMain/kotlin/com/pictovoice/ui/`
+must avoid custom low-level gesture handlers that can interfere with assistive touch systems.
+
+- Use high-level Compose interactions (`Button`, `clickable`) for tap actions.
+- Avoid custom pointer gesture interception for core controls (`pointerInput`, gesture detectors) unless strictly required.
+- Keep minimum touch targets at or above the current 48-56dp controls used by the communication screen.
+
+Current verification:
+
+- No `pointerInput`, `detectTapGestures`, or similar custom gesture handlers are used in the shared communication UI controls.
