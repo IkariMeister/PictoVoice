@@ -12,11 +12,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":shared:core-model"))
             implementation(project(":shared:core-ui"))
             implementation(project(":shared:feature-communication"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.components.uiToolingPreview)
         }
 
         androidInstrumentedTest.dependencies {

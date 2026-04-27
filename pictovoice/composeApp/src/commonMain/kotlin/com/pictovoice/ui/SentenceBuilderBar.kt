@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SentenceBuilderBar(
@@ -40,7 +39,6 @@ fun SentenceBuilderBar(
     }
 }
 
-@Preview
 @Composable
 private fun SentenceBuilderBarPreview() {
     PictoVoiceTheme {
@@ -54,7 +52,6 @@ private fun SentenceBuilderBarPreview() {
     }
 }
 
-@Preview
 @Composable
 private fun SentenceBuilderBarEmptyPreview() {
     PictoVoiceTheme {

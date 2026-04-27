@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val MinTouchTarget = 48.dp
 
@@ -56,7 +55,6 @@ fun PictogramGrid(
     }
 }
 
-@Preview
 @Composable
 private fun PictogramGridPreview() {
     PictoVoiceTheme {

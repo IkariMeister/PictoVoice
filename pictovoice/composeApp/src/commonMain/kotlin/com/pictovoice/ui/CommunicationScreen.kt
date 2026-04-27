@@ -17,7 +17,6 @@ import com.pictovoice.core.ui.PictoVoiceTheme
 import com.pictovoice.feature.communication.presentation.CommunicationEvent
 import com.pictovoice.feature.communication.presentation.CommunicationUiState
 import com.pictovoice.feature.communication.presentation.CommunicationViewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CommunicationScreen(
@@ -76,7 +75,6 @@ private fun CommunicationScreenContent(
     }
 }
 
-@Preview
 @Composable
 private fun CommunicationScreenPreview() {
     PictoVoiceTheme {
