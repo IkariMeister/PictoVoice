@@ -29,6 +29,7 @@ fun CommunicationScreen(
         onPictogramSelected = { viewModel.onEvent(CommunicationEvent.SelectPictogram(it)) },
         onSpeakTapped = { viewModel.onEvent(CommunicationEvent.SpeakTapped) },
         onClearTapped = { viewModel.onEvent(CommunicationEvent.ClearSentence) },
+        onSyncRequested = { viewModel.onEvent(CommunicationEvent.SyncRequested) },
         modifier = modifier,
     )
 }
@@ -39,6 +40,7 @@ private fun CommunicationScreenContent(
     onPictogramSelected: (Pictogram) -> Unit,
     onSpeakTapped: () -> Unit,
     onClearTapped: () -> Unit,
+    onSyncRequested: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -72,6 +74,14 @@ private fun CommunicationScreenContent(
         ) {
             Text("Clear")
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onSyncRequested,
+        ) {
+            Text("Sync")
+        }
     }
 }
 
@@ -100,6 +110,7 @@ private fun CommunicationScreenPreview() {
             onPictogramSelected = {},
             onSpeakTapped = {},
             onClearTapped = {},
+            onSyncRequested = {},
         )
     }
 }
