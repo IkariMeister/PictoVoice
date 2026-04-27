@@ -18,6 +18,16 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
         }
+
+        androidInstrumentedTest.dependencies {
+            implementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+            implementation("androidx.test.ext:junit:1.2.1")
+            implementation("androidx.test:runner:1.6.2")
+        }
+
+        androidMain.dependencies {
+            debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
+        }
     }
 }
 
@@ -26,6 +36,7 @@ android {
     compileSdk = 35
     defaultConfig {
         minSdk = 26
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
