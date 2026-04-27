@@ -31,13 +31,36 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Run shared module checks
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: >
+          sdkmanager
+          "platform-tools"
+          "platforms;android-35"
+          "build-tools;35.0.0"
+
+      - name: Run tests, lint, and builds
         working-directory: pictovoice
         run: >
           gradle
-          :shared:core-model:check
-          :shared:core-ui:check
-          :shared:core-telemetry:check
-          :shared:feature-vocabulary:check
-          :shared:feature-communication:check
+          :composeApp:test
+          :shared:core-model:test
+          :shared:core-ui:test
+          :shared:core-telemetry:test
+          :shared:feature-vocabulary:test
+          :shared:feature-communication:test
+          :composeApp:lint
+          :shared:core-model:lint
+          :shared:core-ui:lint
+          :shared:core-telemetry:lint
+          :shared:feature-vocabulary:lint
+          :shared:feature-communication:lint
+          :composeApp:assembleDebug
+          :shared:core-model:build
+          :shared:core-ui:build
+          :shared:core-telemetry:build
+          :shared:feature-vocabulary:build
+          :shared:feature-communication:build
           --stacktrace
