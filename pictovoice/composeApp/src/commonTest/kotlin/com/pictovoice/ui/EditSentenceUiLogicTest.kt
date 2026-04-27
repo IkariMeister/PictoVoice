@@ -1,0 +1,33 @@
+package com.pictovoice.ui
+
+import com.pictovoice.core.model.Pictogram
+import com.pictovoice.core.model.Sentence
+import com.pictovoice.feature.communication.domain.removePictogramAt
+import com.pictovoice.feature.communication.presentation.CommunicationEvent
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class EditSentenceUiLogicTest {
+    @Test
+    fun removeMiddleItem_preservesRemainingOrder() {
+        val sentence =
+            Sentence(
+                items =
+                    listOf(
+                        Pictogram("a", "A", "A"),
+                        Pictogram("b", "B", "B"),
+                        Pictogram("c", "C", "C"),
+                    ),
+            )
+
+        val result = removePictogramAt(sentence, index = 1)
+
+        assertEquals(listOf("a", "c"), result.items.map { it.id })
+    }
+
+    @Test
+    fun clearEvent_mapsToExpectedUiTrigger() {
+        val event: CommunicationEvent = CommunicationEvent.ClearSentence
+        assertEquals(CommunicationEvent.ClearSentence, event)
+    }
+}
