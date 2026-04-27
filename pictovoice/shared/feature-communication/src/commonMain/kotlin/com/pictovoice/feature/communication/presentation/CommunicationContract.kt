@@ -13,8 +13,11 @@ sealed interface CommunicationEvent {
     data class SelectPictogram(val pictogram: Pictogram) : CommunicationEvent
     data object ClearSentence : CommunicationEvent
     data object SpeakTapped : CommunicationEvent
+    data object SyncRequested : CommunicationEvent
 }
 
 sealed interface CommunicationEffect {
     data object EmptySentenceIgnored : CommunicationEffect
+    data object SyncSkippedOffline : CommunicationEffect
+    data object SyncCompleted : CommunicationEffect
 }

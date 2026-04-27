@@ -8,6 +8,10 @@ import com.pictovoice.feature.communication.domain.addPictogram
 import com.pictovoice.feature.communication.domain.clearSentence
 import com.pictovoice.feature.communication.domain.speakSentence
 import com.pictovoice.feature.vocabulary.data.InMemoryVocabularyRepository
+import com.pictovoice.feature.vocabulary.data.network.NetworkMonitor
+import com.pictovoice.feature.vocabulary.data.network.OfflineNetworkMonitor
+import com.pictovoice.feature.vocabulary.domain.SyncResult
+import com.pictovoice.feature.vocabulary.domain.SyncVocabularyHandler
 import com.pictovoice.feature.vocabulary.domain.VocabularyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +27,10 @@ class CommunicationViewModel(
     private val vocabularyRepository: VocabularyRepository = InMemoryVocabularyRepository(),
     private val textToSpeechEngine: TextToSpeechEngine = NoopTextToSpeechEngine,
     private val telemetry: Telemetry = NoopTelemetry,
+    networkMonitor: NetworkMonitor = OfflineNetworkMonitor,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val syncVocabularyHandler = SyncVocabularyHandler(networkMonitor)
 
     private val _state = MutableStateFlow(CommunicationUiState())
     val state: StateFlow<CommunicationUiState> = _state.asStateFlow()
@@ -56,6 +62,7 @@ class CommunicationViewModel(
                         }
                         _state.value = _state.value.copy(isSpeaking = true)
                         try {
+                            // Speech path remains local-first and independent from network.
                             speakSentence(sentence, vocabularyRepository, textToSpeechEngine)
                         } finally {
                             _state.value = _state.value.copy(isSpeaking = false)
@@ -63,6 +70,19 @@ class CommunicationViewModel(
                     }
                     _state.value
                 }
+                CommunicationEvent.SyncRequested -> {
+                    scope.launch {
+                        when (syncVocabularyHandler { refreshPictograms() }) {
+                            SyncResult.SkippedOffline -> _effects.send(CommunicationEffect.SyncSkippedOffline)
+                            SyncResult.Synced -> _effects.send(CommunicationEffect.SyncCompleted)
+                        }
+                    }
+                    _state.value
+                }
             }
+    }
+
+    private suspend fun refreshPictograms() {
+        _state.value = _state.value.copy(pictograms = vocabularyRepository.listPictograms())
     }
 }
