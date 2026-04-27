@@ -72,15 +72,15 @@ private fun PictogramCell(
                 .heightIn(min = MinTouchTarget)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
+                .semantics {
+                    role = Role.Button
+                    contentDescription = pictogramCellDescription(pictogram.label)
+                }
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
                     onClick = onClick,
                 ),
-                .semantics {
-                    role = Role.Button
-                    contentDescription = pictogramCellDescription(pictogram.label)
-                },
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
