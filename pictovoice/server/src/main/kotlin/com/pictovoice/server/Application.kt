@@ -12,6 +12,8 @@ import io.ktor.server.response.respondText
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import com.pictovoice.server.auth.configureCaregiverAuth
+import com.pictovoice.server.routes.caregiverRoutes
 import com.pictovoice.server.routes.deviceRoutes
 import com.pictovoice.server.routes.vocabularyRoutes
 
@@ -23,6 +25,7 @@ fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
+    configureCaregiverAuth()
 
     routing {
         get("/health") {
@@ -34,5 +37,6 @@ fun Application.module() {
         }
         vocabularyRoutes()
         deviceRoutes()
+        caregiverRoutes()
     }
 }
