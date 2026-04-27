@@ -61,3 +61,33 @@ must avoid custom low-level gesture handlers that can interfere with assistive t
 Current verification:
 
 - No `pointerInput`, `detectTapGestures`, or similar custom gesture handlers are used in the shared communication UI controls.
+
+## US3 testing quickstart
+
+Run from `pictovoice/` with Android SDK configured and an emulator/device connected for instrumented tests.
+
+### Shared logic tests (JVM/common)
+
+```bash
+./gradlew :shared:feature-communication:allTests
+./gradlew :composeApp:allTests
+```
+
+Expected US3-related coverage includes:
+
+- `CommunicationViewModelTest`
+- `EditSentenceUiLogicTest`
+
+### Android instrumented interaction tests
+
+```bash
+./gradlew :composeApp:connectedDebugAndroidTest
+```
+
+US3 interaction suite:
+
+- `EditSentenceUiTest`
+  - sentence item tap removes item
+  - clear action empties sentence strip
+  - speak/clear accessibility labels exist
+  - speak button pressed state toggles via semantics
