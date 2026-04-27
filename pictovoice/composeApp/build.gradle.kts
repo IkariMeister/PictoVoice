@@ -12,12 +12,23 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":shared:core-model"))
+            implementation(project(":shared:core-telemetry"))
             implementation(project(":shared:core-ui"))
             implementation(project(":shared:feature-communication"))
+            implementation(project(":shared:feature-vocabulary"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.components.uiToolingPreview)
         }
+
+        androidInstrumentedTest.dependencies {
+            implementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+            implementation("androidx.test.ext:junit:1.2.1")
+            implementation("androidx.test:runner:1.6.2")
+        }
+
     }
 }
 
@@ -26,6 +37,7 @@ android {
     compileSdk = 35
     defaultConfig {
         minSdk = 26
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
