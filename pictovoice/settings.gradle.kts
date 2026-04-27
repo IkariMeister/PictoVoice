@@ -20,10 +20,9 @@ rootProject.name = "PictoVoice"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include(":shared:domain")
-include(":shared:data")
-include(":shared:presentation")
+include(":shared:core-model")
+include(":shared:core-ui")
+include(":shared:core-telemetry")
+include(":shared:feature-vocabulary")
+include(":shared:feature-communication")
 include(":composeApp")
-include(":androidApp")
-include(":iosApp")
-include(":server")

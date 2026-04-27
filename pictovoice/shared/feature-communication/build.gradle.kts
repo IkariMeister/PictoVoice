@@ -12,17 +12,20 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":shared:core-model"))
             implementation(project(":shared:core-ui"))
-            implementation(project(":shared:feature-communication"))
+            implementation(project(":shared:core-telemetry"))
+            implementation(project(":shared:feature-vocabulary"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(libs.kotlinx.coroutines.core)
         }
     }
 }
 
 android {
-    namespace = "com.pictovoice.composeapp"
+    namespace = "com.pictovoice.feature.communication"
     compileSdk = 35
     defaultConfig {
         minSdk = 26
