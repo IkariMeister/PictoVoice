@@ -15,6 +15,7 @@ kotlin {
             implementation(project(":shared:core-model"))
             implementation(project(":shared:core-ui"))
             implementation(project(":shared:feature-communication"))
+            implementation(project(":shared:feature-vocabulary"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

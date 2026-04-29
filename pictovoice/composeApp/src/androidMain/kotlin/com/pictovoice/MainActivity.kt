@@ -6,11 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 
 class MainActivity : ComponentActivity() {
+    private lateinit var sentenceSpeaker: AndroidSentenceSpeaker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sentenceSpeaker = AndroidSentenceSpeaker(this)
         enableEdgeToEdge()
         setContent {
-            App()
+            App(onSpeakSentence = sentenceSpeaker::speak)
         }
+    }
+
+    override fun onDestroy() {
+        sentenceSpeaker.shutdown()
+        super.onDestroy()
     }
 }

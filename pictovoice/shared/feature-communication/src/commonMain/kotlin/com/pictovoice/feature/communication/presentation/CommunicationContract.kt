@@ -10,5 +10,10 @@ data class CommunicationUiState(
 
 sealed interface CommunicationEvent {
     data class SelectPictogram(val pictogram: Pictogram) : CommunicationEvent
+    data object SpeakSentence : CommunicationEvent
     data object ClearSentence : CommunicationEvent
+}
+
+sealed interface CommunicationEffect {
+    data class StatusMessage(val value: String) : CommunicationEffect
 }
