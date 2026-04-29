@@ -208,6 +208,7 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 - [ ] T081 Add ProGuard/R8 consumer rules file `pictovoice/androidApp/proguard-rules.pro` for Ktor/Sentry if minify enabled
 - [ ] T082 [P] Add privacy manifest / usage descriptions for microphone if ever used (likely not) and network usage strings in `pictovoice/iosApp/Info.plist`
 - [ ] T083 Review Sentry events to confirm no sentence text leaves device in `pictovoice/shared/presentation/.../SentryBreadcrumbs.kt`
+- [ ] T084 [P] Add Kotlin linting as a chore (detekt or ktlint/spotless), configure baseline/rules, and wire CI check task in `pictovoice/build.gradle.kts` and `.github/workflows/pictovoice-ci.yml`
 
 ---
 
@@ -258,7 +259,7 @@ US4 can start server tasks (T058–T063) in parallel with late US1 polish once P
 | Phase 4 US2 | 6 |
 | Phase 5 US3 | 8 |
 | Phase 6 US4 | 23 |
-| Phase 7 Polish | 8 |
-| **Total** | **83** |
+| Phase 7 Polish | 9 |
+| **Total** | **84** |
 
 All tasks use checklist format with sequential IDs and file paths as required.
