@@ -1,64 +1,93 @@
 package com.pictovoice.feature.communication.presentation
 
+import com.pictovoice.core.telemetry.NoopTelemetry
+import com.pictovoice.core.telemetry.Telemetry
+import com.pictovoice.feature.communication.domain.NoopTextToSpeechEngine
+import com.pictovoice.feature.communication.domain.TextToSpeechEngine
 import com.pictovoice.feature.communication.domain.addPictogram
 import com.pictovoice.feature.communication.domain.clearSentence
+import com.pictovoice.feature.communication.domain.removePictogramAt
+import com.pictovoice.feature.communication.domain.speakSentence
 import com.pictovoice.feature.vocabulary.data.InMemoryVocabularyRepository
+import com.pictovoice.feature.vocabulary.data.network.NetworkMonitor
+import com.pictovoice.feature.vocabulary.data.network.OfflineNetworkMonitor
+import com.pictovoice.feature.vocabulary.domain.SyncResult
+import com.pictovoice.feature.vocabulary.domain.SyncVocabularyHandler
 import com.pictovoice.feature.vocabulary.domain.VocabularyRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class CommunicationViewModel(
     private val vocabularyRepository: VocabularyRepository = InMemoryVocabularyRepository(),
-    private val onSpeakSentence: (String) -> Unit = {},
-    private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
-    initialState: CommunicationUiState = CommunicationUiState(),
+    private val textToSpeechEngine: TextToSpeechEngine = NoopTextToSpeechEngine,
+    private val telemetry: Telemetry = NoopTelemetry,
+    networkMonitor: NetworkMonitor = OfflineNetworkMonitor,
+    dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
-    private val _state = MutableStateFlow(initialState)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+    private val syncVocabularyHandler = SyncVocabularyHandler(networkMonitor)
+
+    private val _state = MutableStateFlow(CommunicationUiState())
     val state: StateFlow<CommunicationUiState> = _state.asStateFlow()
-    private val _effects = MutableSharedFlow<CommunicationEffect>(extraBufferCapacity = 8)
-    val effects: SharedFlow<CommunicationEffect> = _effects.asSharedFlow()
+
+    private val _effects = Channel<CommunicationEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     init {
-        coroutineScope.launch {
-            val pictograms = vocabularyRepository.listPictograms()
-            _state.value = _state.value.copy(pictograms = pictograms)
+        scope.launch {
+            _state.value = _state.value.copy(pictograms = vocabularyRepository.listPictograms())
         }
     }
 
     fun onEvent(event: CommunicationEvent) {
         _state.value =
             when (event) {
-                is CommunicationEvent.SelectPictogram ->
+                is CommunicationEvent.SelectPictogram -> {
+                    telemetry.event("pictogram_selected", mapOf("id" to event.pictogram.id))
                     _state.value.copy(sentence = addPictogram(_state.value.sentence, event.pictogram))
-                CommunicationEvent.SpeakSentence -> {
-                    val sentence = _state.value.sentence.items.joinToString(" ") { it.spokenText }.trim()
-                    if (sentence.isEmpty()) {
-                        _effects.tryEmit(CommunicationEffect.StatusMessage("Sentence is empty"))
-                    } else {
+                }
+                is CommunicationEvent.RemovePictogramAt ->
+                    _state.value.copy(sentence = removePictogramAt(_state.value.sentence, event.index))
+                CommunicationEvent.ClearSentence ->
+                    _state.value.copy(sentence = clearSentence())
+                CommunicationEvent.SpeakTapped -> {
+                    scope.launch {
+                        val sentence = _state.value.sentence
+                        if (sentence.items.isEmpty()) {
+                            _effects.send(CommunicationEffect.EmptySentenceIgnored)
+                            return@launch
+                        }
+                        _state.value = _state.value.copy(isSpeaking = true)
                         try {
-                            onSpeakSentence(sentence)
-                            _effects.tryEmit(CommunicationEffect.StatusMessage("Speaking: $sentence"))
-                        } catch (_: Throwable) {
-                            _effects.tryEmit(CommunicationEffect.StatusMessage("Unable to speak sentence"))
+                            // Speech path remains local-first and independent from network.
+                            speakSentence(sentence, vocabularyRepository, textToSpeechEngine)
+                        } finally {
+                            _state.value = _state.value.copy(isSpeaking = false)
                         }
                     }
                     _state.value
                 }
-                CommunicationEvent.ClearSentence ->
-                    _state.value.copy(sentence = clearSentence())
+                CommunicationEvent.SyncRequested -> {
+                    scope.launch {
+                        when (syncVocabularyHandler { refreshPictograms() }) {
+                            SyncResult.SkippedOffline -> _effects.send(CommunicationEffect.SyncSkippedOffline)
+                            SyncResult.Synced -> _effects.send(CommunicationEffect.SyncCompleted)
+                        }
+                    }
+                    _state.value
+                }
             }
     }
 
-    fun clear() {
-        coroutineScope.cancel()
+    private suspend fun refreshPictograms() {
+        _state.value = _state.value.copy(pictograms = vocabularyRepository.listPictograms())
     }
 }
