@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +22,6 @@ import com.pictovoice.feature.communication.presentation.CommunicationEffect
 import com.pictovoice.feature.communication.presentation.CommunicationEvent
 import com.pictovoice.feature.communication.presentation.CommunicationUiState
 import com.pictovoice.feature.communication.presentation.CommunicationViewModel
-import kotlinx.coroutines.flow.onEach
 
 internal fun feedbackMessageFor(effect: CommunicationEffect): String =
     when (effect) {
@@ -37,12 +37,11 @@ fun CommunicationScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var feedbackMessage by remember { mutableStateOf<String?>(null) }
-    val effect by viewModel.effects.onEach { effect ->
-        feedbackMessage = feedbackMessageFor(effect)
-    }.collectAsState(initial = null)
 
-    if (effect != null) {
-        // Collected for side effect into feedbackMessage; value is represented in UI text.
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            feedbackMessage = feedbackMessageFor(effect)
+        }
     }
 
     CommunicationScreenContent(
