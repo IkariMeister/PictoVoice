@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,20 +48,36 @@ fun SentenceBuilderBar(
                 Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
             } else {
                 sentencePictograms.forEachIndexed { index, pictogram ->
-                    Text(
-                        text = removableLabelFor(pictogram.label),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier =
-                            Modifier
-                                .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
-                                .clickable { onPictogramTapped(index) },
-                    )
+                    val dismissState =
+                        rememberSwipeToDismissBoxState(
+                            positionalThreshold = { distance -> distance * 0.3f },
+                            confirmValueChange = { value ->
+                                if (value == DismissValue.EndToStart) {
+                                    onPictogramTapped(index)
+                                }
+                                false
+                            },
+                        )
+                    SwipeToDismissBox(
+                        state = dismissState,
+                        enableDismissFromStartToEnd = false,
+                        backgroundContent = {},
+                    ) {
+                        Text(
+                            text = removableLabelFor(pictogram.label),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier =
+                                Modifier
+                                    .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
+                                    .clickable { onPictogramTapped(index) },
+                        )
+                    }
                 }
             }
         }
         if (sentencePictograms.isNotEmpty()) {
             Text(
-                text = "Tap an item to remove it",
+                text = "Swipe left or tap an item to remove it",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall,
             )
