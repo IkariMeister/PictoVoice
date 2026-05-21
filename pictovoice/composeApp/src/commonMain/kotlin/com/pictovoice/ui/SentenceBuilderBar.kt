@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
@@ -52,7 +51,7 @@ fun SentenceBuilderBar(
                         rememberSwipeToDismissBoxState(
                             positionalThreshold = { distance -> distance * 0.3f },
                             confirmValueChange = { value ->
-                                if (value == DismissValue.EndToStart) {
+                                if (value == SwipeToDismissBoxValue.EndToStart) {
                                     onPictogramTapped(index)
                                 }
                                 false
