@@ -7,8 +7,14 @@ plugins {
 
 kotlin {
     androidTarget()
-    iosArm64()
-    iosSimulatorArm64()
+    iosArm64().binaries.framework {
+        baseName = "ComposeApp"
+        isStatic = true
+    }
+    iosSimulatorArm64().binaries.framework {
+        baseName = "ComposeApp"
+        isStatic = true
+    }
 
     sourceSets {
         commonMain.dependencies {
