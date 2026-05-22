@@ -11,6 +11,13 @@ description: "Task list for PictoVoice AAC (KMP) — generated from plan + spec"
 
 **Organization**: Phases follow user story priority (US1 P1 → US2/US3 P2 → US4 P3).
 
+## GitHub sync notes
+
+- Synced against GitHub issues on 2026-05-22.
+- US3 completed task status reflects closed issues #28, #30, #31, #33, and #34.
+- US2 parent issue #3 is closed while US2 child tasks #22-#27 remain open; reconcile before treating US2 as complete.
+- Chore issue #69 tracks T084 and should be assigned to milestone `002-kmp-pictovoice-aac`.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Parallelizable (different files, no ordering dependency within the same checkpoint)
@@ -124,16 +131,16 @@ Root layout per [plan.md](./plan.md): `pictovoice/shared/`, `pictovoice/composeA
 
 ### Tests for User Story 3
 
-- [ ] T045 [P] [US3] Add unit tests for `RemovePictogramAt` / `ClearSentence` handlers in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlersTest.kt`
+- [x] T045 [P] [US3] Add unit tests for `RemovePictogramAt` / `ClearSentence` handlers in `pictovoice/shared/domain/src/commonTest/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlersTest.kt`
 - [ ] T046 [P] [US3] Add Compose UI tests for remove/clear + visual pressed states in `pictovoice/composeApp/src/commonTest/kotlin/com/pictovoice/ui/EditSentenceUiTest.kt`
 
 ### Implementation for User Story 3
 
-- [ ] T047 [US3] Implement `RemovePictogramAt` and `ClearSentence` handlers in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlers.kt`
-- [ ] T048 [US3] Expose remove/clear events from `CommunicationViewModel` in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/communication/CommunicationViewModel.kt`
+- [x] T047 [US3] Implement `RemovePictogramAt` and `ClearSentence` handlers in `pictovoice/shared/domain/src/commonMain/kotlin/com/pictovoice/domain/usecase/EditSentenceHandlers.kt`
+- [x] T048 [US3] Expose remove/clear events from `CommunicationViewModel` in `pictovoice/shared/presentation/src/commonMain/kotlin/com/pictovoice/presentation/communication/CommunicationViewModel.kt`
 - [ ] T049 [US3] Add per-cell `Modifier` for press indication (border/color) in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/PictogramGrid.kt` and `SpeakButton.kt`
-- [ ] T050 [US3] Add swipe/remove affordance on `SentenceBuilderBar` items in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/SentenceBuilderBar.kt`
-- [ ] T051 [US3] Add `ClearSentence` control composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/ClearSentenceButton.kt` meeting FR-002 size
+- [x] T050 [US3] Add swipe/remove affordance on `SentenceBuilderBar` items in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/SentenceBuilderBar.kt`
+- [x] T051 [US3] Add `ClearSentence` control composable in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/ClearSentenceButton.kt` meeting FR-002 size
 - [ ] T052 [US3] Map platform assistive touch settings (no app-level blocking of long-press) — verify no custom gesture steal in `pictovoice/composeApp/src/commonMain/kotlin/com/pictovoice/ui/` composables
 
 **Checkpoint**: US3 behaviors verified without regressing US1–US2.
