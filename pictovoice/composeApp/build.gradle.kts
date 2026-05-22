@@ -34,11 +34,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
 
-        androidInstrumentedTest.dependencies {
-            implementation("androidx.compose.ui:ui-test-junit4:1.7.5")
-            implementation("androidx.test.ext:junit:1.2.1")
-            implementation("androidx.test:runner:1.6.2")
-        }
     }
 }
 
@@ -65,4 +60,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+}
+
+dependencies {
+    androidTestImplementation("androidx.compose.ui:ui-test:1.7.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+    androidTestImplementation(kotlin("test"))
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 }
