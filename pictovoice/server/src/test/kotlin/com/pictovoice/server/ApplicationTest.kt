@@ -18,10 +18,6 @@ class ApplicationTest {
     @Test
     fun health_endpoint_returns_ok() =
         testApplication {
-            application {
-                module()
-            }
-
             val response = client.get("/health")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals("""{"status":"ok"}""", response.bodyAsText())
@@ -30,10 +26,6 @@ class ApplicationTest {
     @Test
     fun vocabulary_manifest_endpoint_returns_manifest_payload() =
         testApplication {
-            application {
-                module()
-            }
-
             val response = client.get("/v1/vocabulary/manifest")
             val body = response.bodyAsText()
 
@@ -45,10 +37,6 @@ class ApplicationTest {
     @Test
     fun vocabulary_delta_endpoint_returns_query_based_revision() =
         testApplication {
-            application {
-                module()
-            }
-
             val response = client.get("/v1/vocabulary/delta?since=revision-0")
             val body = response.bodyAsText()
 
@@ -61,10 +49,6 @@ class ApplicationTest {
     @Test
     fun vocabulary_delta_without_since_returns_bad_request() =
         testApplication {
-            application {
-                module()
-            }
-
             val response = client.get("/v1/vocabulary/delta")
             val body = response.bodyAsText()
 
@@ -75,10 +59,6 @@ class ApplicationTest {
     @Test
     fun device_register_with_valid_payload_returns_no_content() =
         testApplication {
-            application {
-                module()
-            }
-
             val response =
                 client.post("/v1/devices/register") {
                     contentType(ContentType.Application.Json)
@@ -100,10 +80,6 @@ class ApplicationTest {
     @Test
     fun device_register_without_required_fields_returns_bad_request() =
         testApplication {
-            application {
-                module()
-            }
-
             val response =
                 client.post("/v1/devices/register") {
                     contentType(ContentType.Application.Json)
@@ -111,16 +87,12 @@ class ApplicationTest {
                 }
 
             assertEquals(HttpStatusCode.BadRequest, response.status)
-            assertTrue(response.bodyAsText().contains("Invalid JSON body"))
+            assertTrue(response.bodyAsText().contains("Invalid registration payload"))
         }
 
     @Test
     fun device_register_with_invalid_platform_returns_bad_request() =
         testApplication {
-            application {
-                module()
-            }
-
             val response =
                 client.post("/v1/devices/register") {
                     contentType(ContentType.Application.Json)
@@ -141,10 +113,6 @@ class ApplicationTest {
     @Test
     fun caregiver_layout_without_bearer_token_returns_unauthorized() =
         testApplication {
-            application {
-                module()
-            }
-
             val response = client.put("/v1/caregiver/layout") {
                 contentType(ContentType.Application.Json)
                 setBody("""{"id":"layout-1"}""")
@@ -157,10 +125,6 @@ class ApplicationTest {
     @Test
     fun caregiver_layout_with_invalid_bearer_token_returns_unauthorized() =
         testApplication {
-            application {
-                module()
-            }
-
             val response =
                 client.put("/v1/caregiver/layout") {
                     header("Authorization", "Bearer invalid-token")
@@ -175,10 +139,6 @@ class ApplicationTest {
     @Test
     fun caregiver_layout_with_valid_bearer_token_returns_ok() =
         testApplication {
-            application {
-                module()
-            }
-
             val response =
                 client.put("/v1/caregiver/layout") {
                     header("Authorization", "Bearer caregiver-dev-token")

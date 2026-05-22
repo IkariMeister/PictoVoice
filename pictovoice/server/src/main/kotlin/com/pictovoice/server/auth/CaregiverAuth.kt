@@ -2,10 +2,13 @@ package com.pictovoice.server.auth
 
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respondText
 
 const val CAREGIVER_DEV_TOKEN = "caregiver-dev-token"
+
+fun Application.configureCaregiverAuth() = Unit
 
 suspend fun ApplicationCall.requireCaregiverAuth(): Boolean {
     val bearer = request.headers["Authorization"]?.removePrefix("Bearer ")?.trim()
