@@ -10,7 +10,22 @@
 		A1B2C3D41E00000100000001 /* PictoVoiceIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D41E00010100000001 /* PictoVoiceIOSApp.swift */; };
 		A1B2C3D41E00000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D41E00010100000002 /* ContentView.swift */; };
 		A1B2C3D41E00000100000003 /* ComposeApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D41E00010100000004 /* ComposeApp.framework */; };
+		A1B2C3D41E00000100000004 /* ComposeApp.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D41E00010100000004 /* ComposeApp.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1B2C3D41E00020100000004 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A1B2C3D41E00000100000004 /* ComposeApp.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A1B2C3D41E00010100000001 /* PictoVoiceIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictoVoiceIOSApp.swift; sourceTree = "<group>"; };
@@ -77,6 +92,7 @@
 				A1B2C3D41E00020100000002 /* Sources */,
 				A1B2C3D41E00020100000001 /* Frameworks */,
 				A1B2C3D41E00020100000003 /* Resources */,
+				A1B2C3D41E00020100000004 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
