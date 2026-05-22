@@ -173,4 +173,36 @@ class EditSentenceUiTest {
             SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
         )
     }
+
+    @Test
+    fun clearButton_pressed_state_toggles_during_touch_interaction() {
+        composeRule.setContent {
+            ClearSentenceButton(
+                enabled = true,
+                onClick = {},
+            )
+        }
+
+        val clearButtonNode = composeRule.onNodeWithContentDescription(CLEAR_BUTTON_DESCRIPTION)
+        clearButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
+
+        clearButtonNode.performTouchInput {
+            val center = center
+            down(center)
+        }
+        clearButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, PressedStateDescription),
+        )
+
+        clearButtonNode.performTouchInput {
+            val center = center
+            moveTo(center)
+            up()
+        }
+        clearButtonNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
+    }
 }
