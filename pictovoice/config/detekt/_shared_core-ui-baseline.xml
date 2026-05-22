@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>FunctionNaming:PictoVoiceTheme.kt$@Composable fun PictoVoiceTheme(content: @Composable () -&gt; Unit)</ID>
+    <ID>MagicNumber:PictoVoiceTheme.kt$0xFF000000</ID>
+    <ID>MagicNumber:PictoVoiceTheme.kt$0xFF121212</ID>
+    <ID>MagicNumber:PictoVoiceTheme.kt$0xFFFFEB3B</ID>
+    <ID>MagicNumber:PictoVoiceTheme.kt$0xFFFFFFFF</ID>
+  </CurrentIssues>
+</SmellBaseline>

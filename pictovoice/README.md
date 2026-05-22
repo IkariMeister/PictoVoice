@@ -91,3 +91,22 @@ US3 interaction suite:
   - clear action empties sentence strip
   - speak/clear accessibility labels exist
   - speak button pressed state toggles via semantics
+
+## Kotlin linting (Issue #69)
+
+Detekt is configured at workspace level with:
+
+- config: `pictovoice/config/detekt/detekt.yml`
+- baselines: `pictovoice/config/detekt/*-baseline.xml` (one file per Gradle module)
+
+Run from `pictovoice/`:
+
+```bash
+./gradlew detekt
+```
+
+To regenerate baseline (only when intentionally updating accepted debt):
+
+```bash
+./gradlew detektBaseline
+```

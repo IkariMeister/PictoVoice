@@ -45,6 +45,7 @@ jobs:
         working-directory: pictovoice
         run: >
           gradle
+          detekt
           :composeApp:test
           :shared:core-model:test
           :shared:core-ui:test
