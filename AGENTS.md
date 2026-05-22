@@ -6,8 +6,9 @@ This root file is the primary contract. Nested `AGENTS.md` files add local rules
 
 - Never push commits directly to `master`.
 - Never push commits directly to `develop`.
-- Always use an issue-backed feature branch.
+- Always create an issue-backed feature branch for any change.
 - Feature branch names must follow: `feature/<github_issue_number>_<github_issue_title>` (lowercase words; use underscores for spaces or special characters).
+- Example: `feature/123_add_offline_sync`.
 - Always open a Pull Request for review and merge through the PR flow.
 
 ## Worktrees (mandatory)
@@ -16,6 +17,11 @@ This root file is the primary contract. Nested `AGENTS.md` files add local rules
 - Required flow: create/switch worktree, create/switch feature branch inside that worktree, and run build/test/deploy from that worktree root.
 - Do not run release-impacting validation from the main checkout.
 - PR evidence must include worktree path and branch name used for verification.
+
+## Enforcement note
+
+- If the current branch is `master` or `develop`, stop and create a new issue-backed feature branch in a linked worktree before making commits.
+- Do not overwrite, delete, or move untracked or modified user files without explicit approval.
 
 ## Architecture map
 
@@ -37,16 +43,10 @@ Read the nearest nested `AGENTS.md` before changing code under that path.
 ## Verification policy (mandatory for PR)
 
 - The whole project must build successfully before opening a PR.
-- If app code changes, deploy and verify the touched platform:
+- If app code changes, deploy and verify the touched platform.
 - Prefer physical devices when available; otherwise use tablet simulator/emulator.
-- Include screenshots in the PR.
-- If backend code changes, deploy/start backend using the documented command:
-- Include deployment evidence (command, endpoint/process, smoke result, logs or screenshot).
-- If web code changes, open the web app in a browser and verify touched flows:
-- Include screenshots in the PR.
-- Every PR must include verification evidence:
-- Full-build result.
-- Worktree path and branch.
-- Deployment/browser/device details.
-- Screenshots.
-- Any skipped checks with explicit reason.
+- Include screenshots in the PR for app and web changes.
+- If backend code changes, deploy/start backend using the documented command.
+- Include backend deployment evidence (command, endpoint/process, smoke result, logs or screenshot).
+- If web code changes, open the web app in a browser and verify touched flows.
+- Every PR must include full-build result, worktree path and branch, deployment/browser/device details, screenshots, and any skipped checks with explicit reason.
