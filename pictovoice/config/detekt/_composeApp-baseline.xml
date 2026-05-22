@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>FunctionNaming:App.kt$@Composable fun App(viewModel: CommunicationViewModel = CommunicationViewModel())</ID>
+    <ID>FunctionNaming:ClearSentenceButton.kt$@Composable fun ClearSentenceButton( enabled: Boolean, onClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ClearSentenceButton.kt$@Composable private fun ClearSentenceButtonDisabledPreview()</ID>
+    <ID>FunctionNaming:ClearSentenceButton.kt$@Composable private fun ClearSentenceButtonEnabledPreview()</ID>
+    <ID>FunctionNaming:CommunicationScreen.kt$@Composable fun CommunicationScreen( viewModel: CommunicationViewModel, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:CommunicationScreen.kt$@Composable private fun CommunicationScreenContent( state: CommunicationUiState, feedbackMessage: String?, onPictogramSelected: (Pictogram) -&gt; Unit, onSentencePictogramTapped: (Int) -&gt; Unit, onSpeakTapped: () -&gt; Unit, onClearTapped: () -&gt; Unit, onSyncRequested: () -&gt; Unit, onDismissFeedback: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:CommunicationScreen.kt$@Composable private fun CommunicationScreenPreview()</ID>
+    <ID>FunctionNaming:PictogramGrid.kt$@Composable fun PictogramGrid( pictograms: List&lt;Pictogram&gt;, onPictogramSelected: (Pictogram) -&gt; Unit, modifier: Modifier = Modifier, columns: Int = 2, )</ID>
+    <ID>FunctionNaming:PictogramGrid.kt$@Composable private fun PictogramCell( pictogram: Pictogram, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:PictogramGrid.kt$@Composable private fun PictogramGridPreview()</ID>
+    <ID>FunctionNaming:SentenceBuilderBar.kt$@Composable fun SentenceBuilderBar( sentencePictograms: List&lt;Pictogram&gt;, onPictogramTapped: (Int) -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:SentenceBuilderBar.kt$@Composable private fun SentenceBuilderBarEmptyPreview()</ID>
+    <ID>FunctionNaming:SentenceBuilderBar.kt$@Composable private fun SentenceBuilderBarPreview()</ID>
+    <ID>FunctionNaming:SpeakButton.kt$@Composable fun SpeakButton( enabled: Boolean, isSpeaking: Boolean, onClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:SpeakButton.kt$@Composable private fun SpeakButtonDisabledPreview()</ID>
+    <ID>FunctionNaming:SpeakButton.kt$@Composable private fun SpeakButtonEnabledPreview()</ID>
+    <ID>FunctionNaming:SpeakButton.kt$@Composable private fun SpeakButtonSpeakingPreview()</ID>
+    <ID>LongParameterList:CommunicationScreen.kt$( state: CommunicationUiState, feedbackMessage: String?, onPictogramSelected: (Pictogram) -&gt; Unit, onSentencePictogramTapped: (Int) -&gt; Unit, onSpeakTapped: () -&gt; Unit, onClearTapped: () -&gt; Unit, onSyncRequested: () -&gt; Unit, onDismissFeedback: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>MagicNumber:AndroidTextToSpeechEngine.kt$AndroidTextToSpeechEngine$10_000L</ID>
+    <ID>TopLevelPropertyNaming:SpeakButton.kt$internal const val NotPressedStateDescription = "Not pressed"</ID>
+    <ID>TopLevelPropertyNaming:SpeakButton.kt$internal const val PressedStateDescription = "Pressed"</ID>
+    <ID>TopLevelPropertyNaming:SpeakButton.kt$internal const val SpeakButtonDescription = "Speak sentence"</ID>
+    <ID>UnusedPrivateMember:ClearSentenceButton.kt$@Composable private fun ClearSentenceButtonDisabledPreview()</ID>
+    <ID>UnusedPrivateMember:ClearSentenceButton.kt$@Composable private fun ClearSentenceButtonEnabledPreview()</ID>
+    <ID>UnusedPrivateMember:CommunicationScreen.kt$@Composable private fun CommunicationScreenPreview()</ID>
+    <ID>UnusedPrivateMember:PictogramGrid.kt$@Composable private fun PictogramGridPreview()</ID>
+    <ID>UnusedPrivateMember:SentenceBuilderBar.kt$@Composable private fun SentenceBuilderBarEmptyPreview()</ID>
+    <ID>UnusedPrivateMember:SentenceBuilderBar.kt$@Composable private fun SentenceBuilderBarPreview()</ID>
+    <ID>UnusedPrivateMember:SpeakButton.kt$@Composable private fun SpeakButtonDisabledPreview()</ID>
+    <ID>UnusedPrivateMember:SpeakButton.kt$@Composable private fun SpeakButtonEnabledPreview()</ID>
+    <ID>UnusedPrivateMember:SpeakButton.kt$@Composable private fun SpeakButtonSpeakingPreview()</ID>
+  </CurrentIssues>
+</SmellBaseline>

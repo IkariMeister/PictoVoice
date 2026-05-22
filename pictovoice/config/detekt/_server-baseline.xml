@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:VocabularyRoutes.kt$fun Route.vocabularyRoutes()</ID>
+    <ID>ReturnCount:CaregiverAuth.kt$suspend fun ApplicationCall.requireCaregiverAuth(): Boolean</ID>
+    <ID>TopLevelPropertyNaming:VocabularyRoutes.kt$private const val ManifestEtag = "\"revision-1\""</ID>
+    <ID>TopLevelPropertyNaming:VocabularyRoutes.kt$private const val ManifestGeneratedAt = "2026-01-01T00:00:00Z"</ID>
+    <ID>TopLevelPropertyNaming:VocabularyRoutes.kt$private const val ManifestRevision = "revision-1"</ID>
+  </CurrentIssues>
+</SmellBaseline>
