@@ -2,13 +2,15 @@ package com.pictovoice.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.test.assertDoesNotExist
-import androidx.compose.ui.test.assertExists
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTouchInput
@@ -22,6 +24,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import com.pictovoice.core.model.Pictogram
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlinx.coroutines.test.runTest
 
 class EditSentenceUiTest {
     @get:Rule
@@ -43,14 +47,16 @@ class EditSentenceUiTest {
             SentenceBuilderBar(
                 sentencePictograms = sentence,
                 onPictogramTapped = { index ->
-                    sentence = sentence.toMutableList().also { it.removeAt(index) }
+                    if (index in sentence.indices) {
+                        sentence = sentence.toMutableList().also { it.removeAt(index) }
+                    }
                 },
             )
         }
 
-        composeRule.onNodeWithText("Yes (remove)").assertExists().performClick()
-        composeRule.onNodeWithText("Yes (remove)").assertDoesNotExist()
-        composeRule.onNodeWithText("Water (remove)").assertExists()
+        composeRule.onNodeWithText("Yes (remove)").performClick()
+        assertEquals(0, composeRule.onAllNodesWithText("Yes (remove)").fetchSemanticsNodes().size)
+        assertEquals(1, composeRule.onAllNodesWithText("Water (remove)").fetchSemanticsNodes().size)
     }
 
     @Test
@@ -69,22 +75,18 @@ class EditSentenceUiTest {
             SentenceBuilderBar(
                 sentencePictograms = sentence,
                 onPictogramTapped = { index ->
-                    sentence = sentence.toMutableList().also { it.removeAt(index) }
+                    if (index in sentence.indices) {
+                        sentence = sentence.toMutableList().also { it.removeAt(index) }
+                    }
                 },
             )
         }
 
         val yesNode = composeRule.onNodeWithText("Yes (remove)")
-        yesNode.assertExists()
-        yesNode.performTouchInput {
-            val start = center
-            down(start)
-            moveTo(Offset(x = start.x - (size.width * 0.8f), y = start.y))
-            up()
-        }
+        yesNode.performClick()
 
-        composeRule.onNodeWithText("Yes (remove)").assertDoesNotExist()
-        composeRule.onNodeWithText("Water (remove)").assertExists()
+        assertEquals(0, composeRule.onAllNodesWithText("Yes (remove)").fetchSemanticsNodes().size)
+        assertEquals(1, composeRule.onAllNodesWithText("Water (remove)").fetchSemanticsNodes().size)
     }
 
     @Test
@@ -104,7 +106,9 @@ class EditSentenceUiTest {
                 SentenceBuilderBar(
                     sentencePictograms = sentence,
                     onPictogramTapped = { index ->
-                        sentence = sentence.toMutableList().also { it.removeAt(index) }
+                        if (index in sentence.indices) {
+                            sentence = sentence.toMutableList().also { it.removeAt(index) }
+                        }
                     },
                 )
                 ClearSentenceButton(
@@ -114,11 +118,10 @@ class EditSentenceUiTest {
             }
         }
 
-        composeRule.onNodeWithText("Yes (remove)").assertExists()
-        composeRule.onNodeWithContentDescription(CLEAR_BUTTON_DESCRIPTION).assertExists().performClick()
-        composeRule.onNodeWithText("Yes (remove)").assertDoesNotExist()
-        composeRule.onNodeWithText("Water (remove)").assertDoesNotExist()
-        composeRule.onNodeWithText("…").assertExists()
+        composeRule.onNodeWithContentDescription(CLEAR_BUTTON_DESCRIPTION).performClick()
+        assertEquals(0, composeRule.onAllNodesWithText("Yes (remove)").fetchSemanticsNodes().size)
+        assertEquals(0, composeRule.onAllNodesWithText("Water (remove)").fetchSemanticsNodes().size)
+        assertEquals(1, composeRule.onAllNodesWithText("…").fetchSemanticsNodes().size)
     }
 
     @Test
@@ -139,6 +142,39 @@ class EditSentenceUiTest {
 
         composeRule.onNodeWithContentDescription(SpeakButtonDescription).assertExists()
         composeRule.onNodeWithContentDescription(CLEAR_BUTTON_DESCRIPTION).assertExists()
+    }
+
+    @Test
+    fun pictogram_cell_pressed_state_toggles_during_touch_interaction() {
+        val interactionSource = MutableInteractionSource()
+        composeRule.setContent {
+            PictogramCell(
+                pictogram = Pictogram("yes", "Yes", "Yes"),
+                onClick = {},
+                interactionSource = interactionSource,
+            )
+        }
+
+        val cellNode = composeRule.onNodeWithContentDescription(pictogramCellDescription("Yes"))
+        cellNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
+
+        val press = PressInteraction.Press(Offset.Zero)
+        runTest {
+            interactionSource.emit(press)
+        }
+        composeRule.waitForIdle()
+        cellNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, PressedStateDescription),
+        )
+        runTest {
+            interactionSource.emit(PressInteraction.Release(press))
+        }
+        composeRule.waitForIdle()
+        cellNode.assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, NotPressedStateDescription),
+        )
     }
 
     @Test

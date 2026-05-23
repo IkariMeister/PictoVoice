@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -54,12 +55,14 @@ fun PictogramGrid(
 }
 
 @Composable
-private fun PictogramCell(
+internal fun PictogramCell(
     pictogram: Pictogram,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource? = null,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val resolvedInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val isPressed by resolvedInteractionSource.collectIsPressedAsState()
     val containerColor =
         if (isPressed) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
     val contentColor =
@@ -68,16 +71,17 @@ private fun PictogramCell(
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         modifier =
-            Modifier
+            modifier
                 .heightIn(min = MinTouchTarget)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .semantics {
                     role = Role.Button
                     contentDescription = pictogramCellDescription(pictogram.label)
+                    stateDescription = if (isPressed) PressedStateDescription else NotPressedStateDescription
                 }
                 .clickable(
-                    interactionSource = interactionSource,
+                    interactionSource = resolvedInteractionSource,
                     indication = null,
                     onClick = onClick,
                 ),

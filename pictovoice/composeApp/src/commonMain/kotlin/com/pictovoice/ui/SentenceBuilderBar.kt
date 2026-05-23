@@ -2,6 +2,7 @@ package com.pictovoice.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,11 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -47,29 +53,41 @@ fun SentenceBuilderBar(
                 Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
             } else {
                 sentencePictograms.forEachIndexed { index, pictogram ->
-                    val dismissState =
-                        rememberSwipeToDismissBoxState(
-                            positionalThreshold = { distance -> distance * 0.3f },
-                            confirmValueChange = { value ->
-                                if (value == SwipeToDismissBoxValue.EndToStart) {
-                                    onPictogramTapped(index)
-                                }
-                                false
-                            },
-                        )
-                    SwipeToDismissBox(
-                        state = dismissState,
-                        enableDismissFromStartToEnd = false,
-                        backgroundContent = {},
-                    ) {
-                        Text(
-                            text = removableLabelFor(pictogram.label),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier =
-                                Modifier
-                                    .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
-                                    .clickable { onPictogramTapped(index) },
-                        )
+                    key(pictogram.id) {
+                        var dismissTriggered by remember { mutableStateOf(false) }
+                        val dismissState =
+                            rememberSwipeToDismissBoxState(
+                                positionalThreshold = { distance -> distance * 0.3f },
+                                confirmValueChange = { value ->
+                                    if (value == SwipeToDismissBoxValue.EndToStart) {
+                                        dismissTriggered = true
+                                        onPictogramTapped(index)
+                                    }
+                                    false
+                                },
+                            )
+                        SwipeToDismissBox(
+                            state = dismissState,
+                            enableDismissFromStartToEnd = false,
+                            backgroundContent = {},
+                        ) {
+                            Text(
+                                text = removableLabelFor(pictogram.label),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier =
+                                    Modifier
+                                        .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
+                                        .clickable {
+                                            if (
+                                                !dismissTriggered &&
+                                                dismissState.targetValue == SwipeToDismissBoxValue.Settled &&
+                                                dismissState.currentValue == SwipeToDismissBoxValue.Settled
+                                            ) {
+                                                onPictogramTapped(index)
+                                            }
+                                        },
+                            )
+                        }
                     }
                 }
             }

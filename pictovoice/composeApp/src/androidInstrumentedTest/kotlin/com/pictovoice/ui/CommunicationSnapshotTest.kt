@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.pictovoice.App
 import com.pictovoice.core.telemetry.Telemetry
@@ -46,6 +47,7 @@ class CommunicationSnapshotTest {
     @Test
     fun communicationScreen_with_sentence_snapshot() {
         val viewModel = testViewModel()
+        composeRule.waitUntil(timeoutMillis = 5_000) { viewModel.state.value.pictograms.isNotEmpty() }
         runBlocking {
             val p = viewModel.state.value.pictograms.first()
             viewModel.onEvent(CommunicationEvent.SelectPictogram(p))
