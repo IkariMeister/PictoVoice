@@ -9,5 +9,7 @@ fun makeMainViewController(): UIViewController =
             enforceStrictPlistSanityCheck = false
         }
     ) {
-        App()
+        App(viewModel = com.pictovoice.feature.communication.presentation.CommunicationViewModel(
+            textToSpeechEngine = IosTextToSpeechEngine(),
+        ))
     }
