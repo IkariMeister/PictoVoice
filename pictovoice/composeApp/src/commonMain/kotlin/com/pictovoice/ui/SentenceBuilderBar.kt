@@ -45,53 +45,10 @@ fun SentenceBuilderBar(
                 .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (sentencePictograms.isEmpty()) {
-                Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
-            } else {
-                sentencePictograms.forEachIndexed { index, pictogram ->
-                    key(pictogram.id) {
-                        var dismissTriggered by remember { mutableStateOf(false) }
-                        val dismissState =
-                            rememberSwipeToDismissBoxState(
-                                positionalThreshold = { distance -> distance * 0.3f },
-                                confirmValueChange = { value ->
-                                    if (value == SwipeToDismissBoxValue.EndToStart) {
-                                        dismissTriggered = true
-                                        onPictogramTapped(index)
-                                    }
-                                    false
-                                },
-                            )
-                        SwipeToDismissBox(
-                            state = dismissState,
-                            enableDismissFromStartToEnd = false,
-                            backgroundContent = {},
-                        ) {
-                            Text(
-                                text = removableLabelFor(pictogram.label),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier =
-                                    Modifier
-                                        .semantics { contentDescription = sentenceItemContentDescription(pictogram.label) }
-                                        .clickable {
-                                            if (
-                                                !dismissTriggered &&
-                                                dismissState.targetValue == SwipeToDismissBoxValue.Settled &&
-                                                dismissState.currentValue == SwipeToDismissBoxValue.Settled
-                                            ) {
-                                                onPictogramTapped(index)
-                                            }
-                                        },
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        sentenceStrip(
+            sentencePictograms = sentencePictograms,
+            onPictogramTapped = onPictogramTapped,
+        )
         if (sentencePictograms.isNotEmpty()) {
             Text(
                 text = "Swipe left or tap an item to remove it",
@@ -99,6 +56,76 @@ fun SentenceBuilderBar(
                 style = MaterialTheme.typography.bodySmall,
             )
         }
+    }
+}
+
+@Composable
+private fun sentenceStrip(
+    sentencePictograms: List<Pictogram>,
+    onPictogramTapped: (Int) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (sentencePictograms.isEmpty()) {
+            Text(text = "…", color = MaterialTheme.colorScheme.onSurface)
+        } else {
+            sentencePictograms.forEachIndexed { index, pictogram ->
+                key(pictogram.id) {
+                    sentenceItem(
+                        pictogram = pictogram,
+                        index = index,
+                        onPictogramTapped = onPictogramTapped,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun sentenceItem(
+    pictogram: Pictogram,
+    index: Int,
+    onPictogramTapped: (Int) -> Unit,
+) {
+    var dismissTriggered by remember { mutableStateOf(false) }
+    val dismissState =
+        rememberSwipeToDismissBoxState(
+            positionalThreshold = { distance -> distance * 0.3f },
+            confirmValueChange = { value ->
+                if (value == SwipeToDismissBoxValue.EndToStart) {
+                    dismissTriggered = true
+                    onPictogramTapped(index)
+                }
+                false
+            },
+        )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {},
+    ) {
+        Text(
+            text = removableLabelFor(pictogram.label),
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier =
+                Modifier
+                    .semantics {
+                        contentDescription = sentenceItemContentDescription(pictogram.label)
+                    }
+                    .clickable {
+                        if (
+                            !dismissTriggered &&
+                            dismissState.targetValue == SwipeToDismissBoxValue.Settled &&
+                            dismissState.currentValue == SwipeToDismissBoxValue.Settled
+                        ) {
+                            onPictogramTapped(index)
+                        }
+                    },
+        )
     }
 }
 

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
 
-private val MinTouchTarget = 48.dp
+private val minTouchTarget = 48.dp
 internal fun pictogramCellDescription(label: String): String = "Add $label"
 
 @Composable
@@ -49,13 +49,13 @@ fun PictogramGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(pictograms, key = { it.id }) { pictogram ->
-            PictogramCell(pictogram = pictogram, onClick = { onPictogramSelected(pictogram) })
+            pictogramCell(pictogram = pictogram, onClick = { onPictogramSelected(pictogram) })
         }
     }
 }
 
 @Composable
-internal fun PictogramCell(
+internal fun pictogramCell(
     pictogram: Pictogram,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -72,12 +72,14 @@ internal fun PictogramCell(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         modifier =
             modifier
-                .heightIn(min = MinTouchTarget)
+                .heightIn(min = minTouchTarget)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .semantics {
                     role = Role.Button
-                    contentDescription = pictogramCellDescription(pictogram.label)
+                    contentDescription = pictogramCellDescription(
+                        pictogram.label,
+                    )
                     stateDescription = if (isPressed) PressedStateDescription else NotPressedStateDescription
                 }
                 .clickable(

@@ -148,7 +148,7 @@ class EditSentenceUiTest {
     fun pictogram_cell_pressed_state_toggles_during_touch_interaction() {
         val interactionSource = MutableInteractionSource()
         composeRule.setContent {
-            PictogramCell(
+            pictogramCell(
                 pictogram = Pictogram("yes", "Yes", "Yes"),
                 onClick = {},
                 interactionSource = interactionSource,
