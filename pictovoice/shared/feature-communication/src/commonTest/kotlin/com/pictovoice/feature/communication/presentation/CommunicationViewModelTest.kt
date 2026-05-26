@@ -38,6 +38,32 @@ class CommunicationViewModelTest {
     }
 
     @Test
+    fun selectPictogram_updates_predictions_with_recent_item_first() = runTest {
+        val repo =
+            object : VocabularyRepository {
+                override suspend fun listPictograms(): List<Pictogram> =
+                    listOf(
+                        Pictogram("yes", "Yes", "Yes"),
+                        Pictogram("water", "Water", "Water"),
+                        Pictogram("help", "Help", "Help"),
+                    )
+
+                override suspend fun getPictogramById(id: String): Pictogram? =
+                    listPictograms().find { it.id == id }
+            }
+        val vm =
+            CommunicationViewModel(
+                vocabularyRepository = repo,
+                telemetry = object : Telemetry { override fun event(name: String, attributes: Map<String, String>) = Unit },
+                dispatcher = UnconfinedTestDispatcher(testScheduler),
+            )
+        delay(10)
+        vm.onEvent(CommunicationEvent.SelectPictogram(Pictogram("water", "Water", "Water")))
+
+        assertEquals(listOf("water", "yes", "help"), vm.state.value.predictions.map { it.id })
+    }
+
+    @Test
     fun speakTapped_withEmptySentence_emitsEffect() = runTest {
         val vm =
             CommunicationViewModel(

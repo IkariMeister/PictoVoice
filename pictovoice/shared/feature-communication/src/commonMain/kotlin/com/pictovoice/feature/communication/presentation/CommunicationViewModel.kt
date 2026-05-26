@@ -3,6 +3,7 @@ package com.pictovoice.feature.communication.presentation
 import com.pictovoice.core.telemetry.NoopTelemetry
 import com.pictovoice.core.telemetry.Telemetry
 import com.pictovoice.feature.communication.domain.NoopTextToSpeechEngine
+import com.pictovoice.feature.communication.domain.OnDevicePredictionEngine
 import com.pictovoice.feature.communication.domain.TextToSpeechEngine
 import com.pictovoice.feature.communication.domain.addPictogram
 import com.pictovoice.feature.communication.domain.clearSentence
@@ -29,6 +30,7 @@ class CommunicationViewModel(
     private val vocabularyRepository: VocabularyRepository = InMemoryVocabularyRepository(),
     private val textToSpeechEngine: TextToSpeechEngine = NoopTextToSpeechEngine,
     private val telemetry: Telemetry = NoopTelemetry,
+    private val predictionEngine: OnDevicePredictionEngine = OnDevicePredictionEngine(),
     networkMonitor: NetworkMonitor = OfflineNetworkMonitor,
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
@@ -43,7 +45,7 @@ class CommunicationViewModel(
 
     init {
         scope.launch {
-            _state.value = _state.value.copy(pictograms = vocabularyRepository.listPictograms())
+            refreshVocabulary()
         }
     }
 
@@ -52,12 +54,27 @@ class CommunicationViewModel(
             when (event) {
                 is CommunicationEvent.SelectPictogram -> {
                     telemetry.event("pictogram_selected", mapOf("id" to event.pictogram.id))
-                    _state.value.copy(sentence = addPictogram(_state.value.sentence, event.pictogram))
+                    _state.value.copy(
+                        sentence = addPictogram(_state.value.sentence, event.pictogram),
+                        predictions = predictionEngine(
+                            addPictogram(_state.value.sentence, event.pictogram),
+                            _state.value.pictograms,
+                        ),
+                    )
                 }
                 is CommunicationEvent.RemovePictogramAt ->
-                    _state.value.copy(sentence = removePictogramAt(_state.value.sentence, event.index))
+                    _state.value.copy(
+                        sentence = removePictogramAt(_state.value.sentence, event.index),
+                        predictions = predictionEngine(
+                            removePictogramAt(_state.value.sentence, event.index),
+                            _state.value.pictograms,
+                        ),
+                    )
                 CommunicationEvent.ClearSentence ->
-                    _state.value.copy(sentence = clearSentence())
+                    _state.value.copy(
+                        sentence = clearSentence(),
+                        predictions = predictionEngine(clearSentence(), _state.value.pictograms),
+                    )
                 CommunicationEvent.SpeakTapped -> {
                     scope.launch {
                         val sentence = _state.value.sentence
@@ -88,6 +105,15 @@ class CommunicationViewModel(
     }
 
     private suspend fun refreshPictograms() {
-        _state.value = _state.value.copy(pictograms = vocabularyRepository.listPictograms())
+        refreshVocabulary()
+    }
+
+    private suspend fun refreshVocabulary() {
+        val pictograms = vocabularyRepository.listPictograms()
+        _state.value =
+            _state.value.copy(
+                pictograms = pictograms,
+                predictions = predictionEngine(_state.value.sentence, pictograms),
+            )
     }
 }

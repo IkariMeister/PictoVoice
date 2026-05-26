@@ -48,10 +48,12 @@ class CommunicationScreenFlowTest {
 
         check(composeRule.onAllNodesWithText("Yes (remove)").fetchSemanticsNodes().isNotEmpty())
         check(composeRule.onAllNodesWithText("Water (remove)").fetchSemanticsNodes().isNotEmpty())
+        composeRule.onNodeWithContentDescription("Prediction Water").performClick()
+        check(composeRule.onAllNodesWithText("Water (remove)").fetchSemanticsNodes().size >= 2)
 
         composeRule.onNodeWithContentDescription(SpeakButtonDescription).performClick()
 
-        assertEquals(listOf("Yes Water"), spoken)
+        assertEquals(listOf("Yes Water Water"), spoken)
     }
 
     private fun testVocabularyRepository() =

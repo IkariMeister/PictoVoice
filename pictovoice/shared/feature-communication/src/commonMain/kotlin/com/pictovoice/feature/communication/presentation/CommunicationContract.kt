@@ -5,6 +5,7 @@ import com.pictovoice.core.model.Sentence
 
 data class CommunicationUiState(
     val pictograms: List<Pictogram> = emptyList(),
+    val predictions: List<Pictogram> = emptyList(),
     val sentence: Sentence = Sentence(emptyList()),
     val isSpeaking: Boolean = false,
 )

@@ -93,6 +93,12 @@ private fun CommunicationScreenContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        PredictionStrip(
+            predictions = state.predictions,
+            onPredictionTapped = onPictogramSelected,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         PictogramGrid(
             pictograms = state.pictograms,
             onPictogramSelected = onPictogramSelected,
@@ -134,12 +140,17 @@ private fun CommunicationScreenContent(
 private fun CommunicationScreenPreview() {
     PictoVoiceTheme {
         CommunicationScreenContent(
-            state =
+                state =
                 CommunicationUiState(
                     pictograms =
                         listOf(
                             Pictogram("yes", "Yes", "Yes"),
                             Pictogram("no", "No", "No"),
+                            Pictogram("water", "Water", "Water"),
+                            Pictogram("help", "Help", "Help"),
+                        ),
+                    predictions =
+                        listOf(
                             Pictogram("water", "Water", "Water"),
                             Pictogram("help", "Help", "Help"),
                         ),
