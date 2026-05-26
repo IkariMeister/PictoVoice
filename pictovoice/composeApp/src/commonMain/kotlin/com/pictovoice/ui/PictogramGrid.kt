@@ -25,13 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.pictovoice.core.model.Pictogram
 import com.pictovoice.core.ui.PictoVoiceTheme
 
-private val MinTouchTarget = 48.dp
+private val minTouchTarget = 48.dp
 internal fun pictogramCellDescription(label: String): String = "Add $label"
 
 @Composable
@@ -48,18 +49,20 @@ fun PictogramGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(pictograms, key = { it.id }) { pictogram ->
-            PictogramCell(pictogram = pictogram, onClick = { onPictogramSelected(pictogram) })
+            pictogramCell(pictogram = pictogram, onClick = { onPictogramSelected(pictogram) })
         }
     }
 }
 
 @Composable
-private fun PictogramCell(
+internal fun pictogramCell(
     pictogram: Pictogram,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource? = null,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val resolvedInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val isPressed by resolvedInteractionSource.collectIsPressedAsState()
     val containerColor =
         if (isPressed) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
     val contentColor =
@@ -68,16 +71,19 @@ private fun PictogramCell(
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         modifier =
-            Modifier
-                .heightIn(min = MinTouchTarget)
+            modifier
+                .heightIn(min = minTouchTarget)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .semantics {
                     role = Role.Button
-                    contentDescription = pictogramCellDescription(pictogram.label)
+                    contentDescription = pictogramCellDescription(
+                        pictogram.label,
+                    )
+                    stateDescription = if (isPressed) PressedStateDescription else NotPressedStateDescription
                 }
                 .clickable(
-                    interactionSource = interactionSource,
+                    interactionSource = resolvedInteractionSource,
                     indication = null,
                     onClick = onClick,
                 ),

@@ -36,6 +36,16 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
 
+        val androidInstrumentedTest by getting {
+            dependencies {
+                implementation("androidx.compose.ui:ui-test:1.7.5")
+                implementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+                implementation(kotlin("test"))
+                implementation("androidx.test.ext:junit:1.2.1")
+                implementation("androidx.test:runner:1.6.2")
+            }
+        }
+
     }
 }
 
