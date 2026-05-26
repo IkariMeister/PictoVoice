@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MaxLineLength:CommunicationViewModelTest.kt$CommunicationViewModelTest$telemetry = object : Telemetry { override fun event(name: String, attributes: Map&lt;String, String&gt;) = Unit }</ID>
+  </CurrentIssues>
+</SmellBaseline>

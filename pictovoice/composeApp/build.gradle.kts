@@ -1,3 +1,5 @@
+@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeCompiler)
@@ -74,10 +76,11 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("androidx.compose.ui:ui-test:1.7.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
-    androidTestImplementation(kotlin("test"))
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
+    add("androidInstrumentedTestImplementation", compose.uiTestJUnit4)
+    add("androidInstrumentedTestImplementation", "androidx.compose.ui:ui-test:1.7.5")
+    add("androidInstrumentedTestImplementation", "androidx.compose.ui:ui-test-manifest:1.7.5")
+    add("androidInstrumentedTestImplementation", libs.kotlin.test)
+    add("androidInstrumentedTestImplementation", "androidx.test.ext:junit:1.2.1")
+    add("androidInstrumentedTestImplementation", "androidx.test:runner:1.6.2")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 }
